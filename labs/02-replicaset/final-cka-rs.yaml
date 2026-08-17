@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+
+metadata:
+  name: final-cka-rs
+
+spec:
+  replicas: 3
+
+  selector:
+    matchLabels:
+      app: final-cka
+
+  template:
+    metadata:
+      labels:
+        app: final-cka
+
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 2
+            periodSeconds: 5

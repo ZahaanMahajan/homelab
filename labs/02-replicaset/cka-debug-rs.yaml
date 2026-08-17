@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+
+metadata:
+  name: cka-debug-rs
+
+spec:
+  replicas: 3
+
+  selector:
+    matchLabels:
+      app: cka-debug
+
+  template:
+    metadata:
+      labels:
+        app: cka-debug
+
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+
+          resources:
+            requests:
+              cpu: "100m"

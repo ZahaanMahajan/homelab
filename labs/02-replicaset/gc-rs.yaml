@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+
+metadata:
+  name: gc-test-rs
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: gc-test
+
+  template:
+    metadata:
+      labels:
+        app: gc-test
+
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest

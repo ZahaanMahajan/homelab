@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+
+metadata:
+  name: failure-rs
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: failure-test
+
+  template:
+    metadata:
+      labels:
+        app: failure-test
+
+    spec:
+      containers:
+        - name: failure-container
+          image: nginx:latest

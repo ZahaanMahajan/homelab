@@ -1,0 +1,97 @@
+# ============================================================
+# Secrets / Credentials
+# ============================================================
+
+.env
+.env.*
+*.secret
+*.secrets
+
+# Private keys / certificates
+*.key
+*.pem
+*.crt
+*.cer
+*.p12
+*.pfx
+
+# Kubernetes credentials
+kubeconfig
+*.kubeconfig
+.kube/
+admin.conf
+
+# ============================================================
+# Talos Linux - generated / credential-bearing configuration
+# ============================================================
+
+talos/talosconfig
+talos/controlplane.yaml
+talos/worker.yaml
+
+# Generated/merged Talos configurations
+talos/*-final.yaml
+talos/*-generated.yaml
+
+# ============================================================
+# Infrastructure state / generated files
+# ============================================================
+
+*.tfstate
+*.tfstate.*
+.terraform/
+terraform.tfvars
+*.auto.tfvars
+
+# ============================================================
+# OS / Editor files
+# ============================================================
+
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# ============================================================
+# Logs / temporary files
+# ============================================================
+
+*.log
+tmp/
+temp/
+
+# ============================================================
+# Large / binary infrastructure artifacts
+# ============================================================
+
+*.iso
+*.img
+*.qcow2
+*.raw
+*.vmdk
+*.vdi
+*.zip
+*.tar
+*.tar.gz
+
+
+
+# ============================================================
+# Kubernetes - actual secret manifests
+# ============================================================
+
+**/secret-values.yaml
+**/secret-values.yml
+**/secrets.yaml
+**/secrets.yml
+
+# Kubernetes generated credentials
+**/kubeconfig*
+**/admin.conf
+
+# Kubernetes generated/runtime files
+*.jsonl
+*.db

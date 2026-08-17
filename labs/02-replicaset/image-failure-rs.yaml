@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+
+metadata:
+  name: image-failure-rs
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: image-failure
+
+  template:
+    metadata:
+      labels:
+        app: image-failure
+
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:this-image-does-not-exist

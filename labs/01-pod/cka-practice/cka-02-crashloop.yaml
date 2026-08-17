@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: cka-crashloop
+
+spec:
+  containers:
+    - name: app
+      image: busybox:latest
+      command:
+        - sh
+        - -c
+        - |
+          echo "Application starting..."
+          echo "Application is healthy!!"
+          exit 0

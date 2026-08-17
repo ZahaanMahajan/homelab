@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+
+metadata:
+  name: cka-rs
+
+spec:
+  replicas: 3
+
+  selector:
+    matchLabels:
+      app: cka-test
+
+  template:
+    metadata:
+      labels:
+        app: cka-test
+
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          resources:
+            requests:
+              cpu: "100"

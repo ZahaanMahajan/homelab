@@ -1,0 +1,10 @@
+machine:
+  network:
+    interfaces:
+      - interface: ens18
+        dhcp: false
+        addresses:
+          - 192.168.29.20/24
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 192.168.29.1

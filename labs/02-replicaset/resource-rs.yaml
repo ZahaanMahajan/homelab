@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+
+metadata:
+  name: resource-test-rs
+
+spec:
+  replicas: 3
+
+  selector:
+    matchLabels:
+      app: resource-test
+
+  template:
+    metadata:
+      labels:
+        app: resource-test
+
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+
+          resources:
+            requests:
+              cpu: "100"
