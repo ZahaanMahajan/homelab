@@ -6,6 +6,15 @@ providers:
   kubernetesIngress:
     enabled: true
 
+ports:
+  web:
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: true
+
 service:
   enabled: true
   annotations:

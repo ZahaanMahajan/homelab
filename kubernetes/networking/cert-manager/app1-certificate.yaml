@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+
+metadata:
+  name: app1-zahaan-online
+  namespace: default
+
+spec:
+  secretName: app1-zahaan-online-tls
+
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+
+  dnsNames:
+    - app1.zahaan.online

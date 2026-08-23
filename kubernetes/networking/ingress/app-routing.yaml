@@ -6,6 +6,11 @@ metadata:
 spec:
   ingressClassName: traefik
 
+  tls:
+    - hosts:
+        - app1.zahaan.online
+      secretName: app1-zahaan-online-tls
+
   rules:
     - host: app1.zahaan.online
       http:
