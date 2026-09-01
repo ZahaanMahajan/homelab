@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: nfs-test-pod
+  namespace: default
+
+spec:
+  containers:
+    - name: test
+      image: busybox:1.36
+      command:
+        - /bin/sh
+        - -c
+        - |
+          echo "Hello from Kubernetes NFS CSI" > /mnt/data/test.txt
+          echo "Data written successfully"
+          sleep 3600
+      volumeMounts:
+        - name: nfs-storage
+          mountPath: /mnt/data
+  volumes:
+    - name: nfs-storage
+      persistentVolumeClaim:
+        claimName: nfs-test-pvc
