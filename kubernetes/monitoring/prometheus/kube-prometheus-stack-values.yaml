@@ -1,9 +1,12 @@
 # Do not deploy duplicate exporters.
 nodeExporter:
-  enabled: false
+  enabled: true
+
+prometheus-node-exporter:
+  namespaceOverride: kube-system
 
 kubeStateMetrics:
-  enabled: false
+  enabled: true
 
 # Grafana
 grafana:
