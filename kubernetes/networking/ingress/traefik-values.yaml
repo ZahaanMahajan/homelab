@@ -1,13 +1,22 @@
+# Traefik Helm chart: 41.6.0
+# MetalLB provides the LoadBalancer IP.
+
 ingressClass:
   enabled: true
   isDefaultClass: true
+  name: traefik
 
 providers:
   kubernetesIngress:
     enabled: true
+    ingressClass: traefik
 
 ports:
   web:
+    port: 8000
+    exposedPort: 80
+    expose:
+      default: true
     http:
       redirections:
         entryPoint:
@@ -15,9 +24,15 @@ ports:
           scheme: https
           permanent: true
 
+  websecure:
+    port: 8443
+    exposedPort: 443
+    expose:
+      default: true
+
 service:
   enabled: true
   annotations:
-    metallb.io/loadBalancerIPs: 192.168.29.240
+    metallb.io/loadBalancerIPs: "192.168.29.240"
   spec:
     type: LoadBalancer

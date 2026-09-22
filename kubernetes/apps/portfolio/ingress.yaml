@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: portfolio
+  namespace: portfolio
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: portfolio.zahaan.online
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: portfolio
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - portfolio.zahaan.online
+      secretName: portfolio-zahaan-online-tls

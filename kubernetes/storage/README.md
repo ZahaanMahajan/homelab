@@ -63,6 +63,17 @@ This documentation covers **only the Kubernetes NFS CSI integration and its vali
                   OMV NAS storage
 ```
 
+### RUN THIS COMMAND TO INSTALL AND UNINSTALL CSI DRIVER 
+
+``` bash
+curl -skSL https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/v4.13.4/deploy/install-driver.sh | bash -s v4.13.4 --
+```
+
+```bash
+curl -skSL https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/v4.13.4/deploy/uninstall-driver.sh | bash -s v4.13.4 --
+```
+
+
 The CSI driver dynamically provisions a directory on the existing NFS share for the PVC. Kubernetes represents the provisioned storage using a PersistentVolume.
 
 The same RWX claim can be mounted by workloads scheduled on different worker nodes, subject to the NFS server and filesystem permissions.

@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: portfolio-zahaan-online
+  namespace: portfolio
+spec:
+  secretName: portfolio-zahaan-online-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames:
+    - portfolio.zahaan.online

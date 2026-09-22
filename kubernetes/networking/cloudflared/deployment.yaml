@@ -1,29 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
-
 metadata:
   name: cloudflared
-  namespace: cloudflare
-
+  namespace: cloudflared
 spec:
   replicas: 2
-
   selector:
     matchLabels:
       app: cloudflared
-
   template:
     metadata:
       labels:
         app: cloudflared
-
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: cloudflared
-          image: cloudflare/cloudflared:latest
-
+          image: cloudflare/cloudflared:2026.9.1
+          imagePullPolicy: IfNotPresent
           command:
             - cloudflared
+          args:
             - tunnel
             - --no-autoupdate
             - --loglevel
@@ -31,18 +30,34 @@ spec:
             - --metrics
             - 0.0.0.0:2000
             - run
-
+            - --token
+            - $(TUNNEL_TOKEN)
           env:
             - name: TUNNEL_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: cloudflared-token
-                  key: TUNNEL_TOKEN
-
+                  key: token
+          ports:
+            - name: metrics
+              containerPort: 2000
           livenessProbe:
             httpGet:
               path: /ready
-              port: 2000
+              port: metrics
             initialDelaySeconds: 10
             periodSeconds: 10
             failureThreshold: 3
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 300m
+              memory: 256Mi
