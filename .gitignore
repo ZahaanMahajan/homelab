@@ -95,3 +95,14 @@ temp/
 # Kubernetes generated/runtime files
 *.jsonl
 *.db
+
+
+# ============================================================
+# OpenTofu - Proxmox Infrastructure
+# ============================================================
+
+**/.terraform/
+**/terraform.tfstate
+**/terraform.tfstate.*
+**/terraform.tfvars
+**/*.tfplan
