@@ -69,3 +69,41 @@ resource "proxmox_virtual_environment_vm" "control_plane" {
     firewall    = true
   }
 }
+
+resource "proxmox_virtual_environment_vm" "worker_01" {
+  name      = "worker-01"
+  node_name = "pve-i3"
+  vm_id     = 102
+
+  on_boot = false
+
+  cpu {
+    cores = 1
+    type  = "x86-64-v2-AES"
+  }
+
+  memory {
+    dedicated = 4096
+  }
+
+  bios = "seabios"
+
+  operating_system {
+    type = "l26"
+  }
+
+  scsi_hardware = "virtio-scsi-single"
+
+  disk {
+    datastore_id = "local-lvm"
+    interface    = "scsi0"
+    size         = 32
+    iothread     = true
+  }
+
+  network_device {
+    bridge      = "vmbr0"
+    mac_address = "BC:24:11:56:E0:0B"
+    firewall    = true
+  }
+}
