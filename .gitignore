@@ -96,6 +96,14 @@ temp/
 *.jsonl
 *.db
 
+# SOPS-encrypted Talos secrets are safe to commit
+!talos/secrets/
+!talos/secrets/*.yaml
+
+# Secrets
+*.secret
+*.secrets
+
 
 # ============================================================
 # OpenTofu - Proxmox Infrastructure
