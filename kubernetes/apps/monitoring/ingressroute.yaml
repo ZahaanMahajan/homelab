@@ -1,0 +1,52 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`grafana.zahaan.online`)
+      kind: Rule
+      services:
+        - name: prometheus-grafana
+          port: 80
+  tls:
+    secretName: grafana-zahaan-online-tls
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: prometheus
+  namespace: monitoring
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`prometheus.zahaan.online`)
+      kind: Rule
+      services:
+        - name: prometheus-operated # stable name from Prometheus Operator
+          port: 9090
+  tls:
+    secretName: prometheus-zahaan-online-tls
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: alertmanager
+  namespace: monitoring
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`alertmanager.zahaan.online`)
+      kind: Rule
+      services:
+        - name: alertmanager-operated # stable name from Prometheus Operator
+          port: 9093
+  tls:
+    secretName: alertmanager-zahaan-online-tls

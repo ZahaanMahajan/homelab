@@ -1,0 +1,40 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: grafana-zahaan-online
+  namespace: monitoring
+spec:
+  secretName: grafana-zahaan-online-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames:
+    - grafana.zahaan.online
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: prometheus-zahaan-online
+  namespace: monitoring
+spec:
+  secretName: prometheus-zahaan-online-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames:
+    - prometheus.zahaan.online
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: alertmanager-zahaan-online
+  namespace: monitoring
+spec:
+  secretName: alertmanager-zahaan-online-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames:
+    - alertmanager.zahaan.online

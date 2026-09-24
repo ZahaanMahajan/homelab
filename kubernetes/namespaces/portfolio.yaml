@@ -3,4 +3,4 @@ kind: Namespace
 metadata:
   name: portfolio
   labels:
-    environment: staging
+    environment: production
