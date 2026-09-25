@@ -51,7 +51,7 @@ resource "proxmox_virtual_environment_vm" "control_plane" {
   }
 
   memory {
-    dedicated = 5120
+    dedicated = 6144
   }
 
   scsi_hardware = "virtio-scsi-single"
