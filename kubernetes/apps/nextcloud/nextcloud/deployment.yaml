@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud
+  namespace: nextcloud
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: nextcloud
+
+  template:
+    metadata:
+      labels:
+        app: nextcloud
+
+    spec:
+      containers:
+        - name: nextcloud
+          image: nextcloud:apache
+
+          ports:
+            - name: http
+              containerPort: 80
+
+          env:
+            - name: NEXTCLOUD_ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-secret
+                  key: NEXTCLOUD_ADMIN_USER
+
+            - name: NEXTCLOUD_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-secret
+                  key: NEXTCLOUD_ADMIN_PASSWORD
+
+            - name: POSTGRES_HOST
+              value: postgres
+
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-secret
+                  key: POSTGRES_DB
+
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-secret
+                  key: POSTGRES_USER
+
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-secret
+                  key: POSTGRES_PASSWORD
+
+            - name: REDIS_HOST
+              value: redis
+
+            - name: REDIS_HOST_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-secret
+                  key: REDIS_PASSWORD
+
+            - name: NEXTCLOUD_TRUSTED_DOMAINS
+              value: nextcloud.zahaan.online
+
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+
+            limits:
+              cpu: 500m
+              memory: 512Mi
+
+          volumeMounts:
+            - name: nextcloud-data
+              mountPath: /var/www/html
+
+      volumes:
+        - name: nextcloud-data
+          persistentVolumeClaim:
+            claimName: nextcloud-data

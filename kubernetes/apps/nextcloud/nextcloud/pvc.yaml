@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nextcloud-data
+  namespace: nextcloud
+
+spec:
+  accessModes:
+    - ReadWriteMany
+
+  storageClassName: nfs-storage
+
+  resources:
+    requests:
+      storage: 200Gi

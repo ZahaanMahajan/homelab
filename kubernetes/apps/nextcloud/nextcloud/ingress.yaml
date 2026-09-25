@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+
+metadata:
+  name: nextcloud
+  namespace: nextcloud
+
+spec:
+  ingressClassName: traefik
+
+  rules:
+    - host: nextcloud.zahaan.online
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nextcloud
+                port:
+                  number: 80
+
+  tls:
+    - hosts:
+        - nextcloud.zahaan.online
+      secretName: nextcloud-zahaan-online-tls
