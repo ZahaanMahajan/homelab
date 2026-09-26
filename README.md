@@ -39,77 +39,9 @@ security, observability, ingress, and platform engineering.
 The current infrastructure is split across two physical Proxmox VE
 hosts.
 
-``` text
-                              Home Network
-                           192.168.29.0/24
-                                  │
-                         Gateway / Router
-                         192.168.29.1
-                                  │
-              ┌───────────────────┴───────────────────┐
-              │                                       │
-       Proxmox VE: pve                      Proxmox VE: pve-i3
-       192.168.29.2                         192.168.29.3
-              │                                       │
-              │                                       │
-      ┌───────┴────────┐                    ┌─────────┴─────────┐
-      │                │                    │                   │
-      │ VM 100         │                    │ VM 102            │
-      │ Pi-hole        │                    │ Worker 01         │
-      │ 192.168.29.10  │                    │ 192.168.29.21     │
-      │                │                    │                   │
-      ├────────────────┤                    ├───────────────────┤
-      │ VM 101         │                    │ VM 103            │
-      │ Control Plane  │                    │ Worker 02         │
-      │ 192.168.29.20  │                    │ 192.168.29.22     │
-      └────────────────┘                    └───────────────────┘
-              │                                       │
-              └───────────────────┬───────────────────┘
-                                  │
-                         Kubernetes Cluster
-                                  │
-                    ┌─────────────┴─────────────┐
-                    │                           │
-             Control Plane                 Workers
-             192.168.29.20         192.168.29.21 / .22
-                    │
-                    ├── kube-apiserver
-                    ├── kube-controller-manager
-                    ├── kube-scheduler
-                    ├── etcd
-                    └── kubelet
-```
-
-### Kubernetes topology
-
-``` text
-                    Kubernetes Cluster
-                    ───────────────────
-
-              ┌──────────────────────────┐
-              │  talos-controlplane-01   │
-              │  Control Plane           │
-              │  192.168.29.20           │
-              │                          │
-              │  etcd                    │
-              │  kube-apiserver          │
-              │  controller-manager      │
-              │  scheduler               │
-              │  kubelet                 │
-              └────────────┬─────────────┘
-                           │
-             ┌─────────────┴─────────────┐
-             │                           │
-   ┌─────────▼─────────┐       ┌─────────▼─────────┐
-   │ talos-worker-01   │       │ talos-worker-02   │
-   │ 192.168.29.21     │       │ 192.168.29.22     │
-   │                   │       │                   │
-   │ kubelet           │       │ kubelet           │
-   │ containerd        │       │ containerd        │
-   │ kube-proxy        │       │ kube-proxy        │
-   │ Flannel           │       │ Flannel           │
-   └───────────────────┘       └───────────────────┘
-```
+<div align="center">
+  <img src="assets/proxmox-talos-architecture.png" alt="Architecture" width="100%" />
+</div>
 
 ------------------------------------------------------------------------
 
@@ -174,9 +106,9 @@ Gateway: 192.168.29.1
   ------------------------------------------------------------------------------------------------
          VMID Name              Purpose      IP                       vCPU         RAM        Disk
   ----------- ----------------- ------------ ----------------- ----------- ----------- -----------
-          100 `pi-hole`         Internal DNS `192.168.29.10`             1       1 GiB      16 GiB
+          100 `pi-hole`         Internal DNS `192.168.29.10`             1      512 MiB      16 GiB
 
-          101 `control-plane`   Kubernetes   `192.168.29.20`             2       2 GiB      32 GiB
+          101 `control-plane`   Kubernetes   `192.168.29.20`             2       6 GiB      32 GiB
                                 control                                                
                                 plane                                                  
   ------------------------------------------------------------------------------------------------
@@ -229,12 +161,12 @@ nic0
   Kubernetes Node           Role       IP                Proxmox              vCPU            RAM
                                                          Host                      
   ------------------------- ---------- ----------------- ---------- -------------- --------------
-  `talos-controlplane-01`   Control    `192.168.29.20`   `pve`                   2          2 GiB
+  `talos-controlplane-01`   Control    `192.168.29.20`   `pve`                   4          6 GiB
                             Plane                                                  
 
-  `talos-worker-01`         Worker     `192.168.29.21`   `pve-i3`                1          4 GiB
+  `talos-worker-01`         Worker     `192.168.29.21`   `pve-i3`                1          5 GiB
 
-  `talos-worker-02`         Worker     `192.168.29.22`   `pve-i3`                1          4 GiB
+  `talos-worker-02`         Worker     `192.168.29.22`   `pve-i3`                1          5 GiB
   -----------------------------------------------------------------------------------------------
 
 The cluster intentionally uses a single control-plane node at this
