@@ -72,7 +72,7 @@ spec:
               value: nextcloud.zahaan.online
 
             - name: PHP_UPLOAD_LIMIT
-              value: "1G"
+              value: "2G"
 
           resources:
             requests:
