@@ -71,6 +71,9 @@ spec:
             - name: NEXTCLOUD_TRUSTED_DOMAINS
               value: nextcloud.zahaan.online
 
+            - name: PHP_UPLOAD_LIMIT
+              value: "1G"
+
           resources:
             requests:
               cpu: 500m
