@@ -1,0 +1,11 @@
+# Snippet: place under spec.template.spec for a workload
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+            - key: app
+              operator: In
+              values:
+                - <app-name>
+        topologyKey: kubernetes.io/hostname

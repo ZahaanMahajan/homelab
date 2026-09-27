@@ -1,0 +1,12 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: <storage-class-name>
+provisioner: <provisioner>
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+allowVolumeExpansion: true
+parameters:
+  # Add provisioner-specific parameters here.
+  # server: <nfs-server-ip>
+  # share: <nfs-share>

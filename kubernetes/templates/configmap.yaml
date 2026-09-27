@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: <configmap-name>
+  namespace: <namespace>
+data:
+  APP_ENV: "production"
+  APP_PORT: "8080"
+  config.yaml: |
+    key: value

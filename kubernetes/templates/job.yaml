@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: <job-name>
+  namespace: <namespace>
+spec:
+  backoffLimit: 4
+  template:
+    metadata:
+      labels:
+        job: <job-name>
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: <container-name>
+          image: <image>:<tag>
+          command: ["<command>"]

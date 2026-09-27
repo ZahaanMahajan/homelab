@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: <daemonset-name>
+  namespace: <namespace>
+  labels:
+    app: <app-name>
+spec:
+  selector:
+    matchLabels:
+      app: <app-name>
+  template:
+    metadata:
+      labels:
+        app: <app-name>
+    spec:
+      containers:
+        - name: <container-name>
+          image: <image>:<tag>
+          ports:
+            - containerPort: <container-port>

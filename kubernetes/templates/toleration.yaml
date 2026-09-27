@@ -1,0 +1,6 @@
+# Snippet: place under spec.template.spec for a Pod/workload
+tolerations:
+  - key: <taint-key>
+    operator: Equal
+    value: <taint-value>
+    effect: NoSchedule
