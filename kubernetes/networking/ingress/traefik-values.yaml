@@ -32,7 +32,9 @@ ports:
 
 service:
   enabled: true
+
   annotations:
     metallb.io/loadBalancerIPs: "192.168.29.240"
+
   spec:
     type: LoadBalancer
