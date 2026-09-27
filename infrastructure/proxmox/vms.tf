@@ -83,7 +83,7 @@ resource "proxmox_virtual_environment_vm" "worker_01" {
   }
 
   memory {
-    dedicated = 4096
+    dedicated = 5120
   }
 
   bios = "seabios"
@@ -121,7 +121,7 @@ resource "proxmox_virtual_environment_vm" "worker_02" {
   }
 
   memory {
-    dedicated = 4096
+    dedicated = 5120
   }
 
   bios = "seabios"
