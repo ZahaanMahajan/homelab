@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: linkding
+  namespace: linkding
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: linkding
+
+  template:
+    metadata:
+      labels:
+        app: linkding
+
+    spec:
+      containers:
+        - name: linkding
+          image: ghcr.io/sissbruecker/linkding:1.47.0-alpine
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - name: http
+              containerPort: 9090
+              protocol: TCP
+
+          env:
+            - name: LD_CSRF_TRUSTED_ORIGINS
+              value: "https://linkding.zahaan.online"
+
+            - name: LD_SUPERUSER_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: linkding-secret
+                  key: username
+
+            - name: LD_SUPERUSER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: linkding-secret
+                  key: password
+
+          volumeMounts:
+            - name: linkding-data
+              mountPath: /etc/linkding/data
+
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+
+      volumes:
+        - name: linkding-data
+          persistentVolumeClaim:
+            claimName: linkding-data
