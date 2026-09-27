@@ -1,0 +1,11 @@
+machine:
+  network:
+    interfaces:
+      - deviceSelector:
+          hardwareAddr: "52:54:00:e2:68:60"
+        dhcp: false
+        addresses:
+          - 192.168.29.23/24
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 192.168.29.1
