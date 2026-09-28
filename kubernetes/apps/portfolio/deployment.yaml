@@ -37,7 +37,7 @@ spec:
 
       containers:
         - name: portfolio
-          image: ghcr.io/zahaanmahajan/portfolio:1ec9aa832bf5b34106e605191c2e2a1afe770aee
+          image: ghcr.io/zahaanmahajan/portfolio:9f3eba0ce0b9fb37604b26753b38814f07db919b
           imagePullPolicy: IfNotPresent
 
           ports:
