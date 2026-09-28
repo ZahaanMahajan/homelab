@@ -1,0 +1,182 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homepage
+  namespace: homepage
+  labels:
+    app.kubernetes.io/name: homepage
+data:
+  kubernetes.yaml: |
+    mode: cluster
+
+  settings.yaml: |
+    title: Zahaan's Homelab
+    headerStyle: clean
+    layout:
+      Kubernetes:
+        style: row
+        columns: 3
+      Applications:
+        style: row
+        columns: 3
+      Infrastructure:
+        style: row
+        columns: 3
+      Observability:
+        style: row
+        columns: 3
+      Developer:
+        style: row
+        columns: 3
+
+  bookmarks.yaml: |
+    - Developer:
+        - GitHub:
+            - abbr: GH
+              href: https://github.com/ZahaanMahajan
+        - Docker Hub:
+            - abbr: DH
+              href: https://hub.docker.com/
+        - Kubernetes:
+            - abbr: K8S
+              href: https://kubernetes.io/
+        - CNCF:
+            - abbr: CN
+              href: https://www.cncf.io/
+
+    - Documentation:
+        - Kubernetes Docs:
+            - abbr: K8S
+              href: https://kubernetes.io/docs/
+        - Talos Docs:
+            - abbr: TL
+              href: https://www.talos.dev/
+        - Traefik Docs:
+            - abbr: TR
+              href: https://doc.traefik.io/traefik/
+        - cert-manager:
+            - abbr: CM
+              href: https://cert-manager.io/docs/
+        - MetalLB:
+            - abbr: ML
+              href: https://metallb.io/
+        - DNSMasq:
+            - abbr: DNS
+              href: https://thekelleys.org.uk/dnsmasq/doc.html
+
+
+    - Cloud:
+        - AWS Console:
+            - abbr: AWS
+              href: https://console.aws.amazon.com/
+        - Cloudflare:
+            - abbr: CF
+              href: https://dash.cloudflare.com/
+
+  services.yaml: |
+    - Kubernetes:
+        - Argo CD:
+            href: https://argocd.zahaan.online
+            description: GitOps continuous delivery
+            icon: argo-cd.png
+
+        - Kubernetes Dashboard:
+            href: https://dashboard.zahaan.online
+            description: Kubernetes cluster management
+            icon: kubernetes.png
+
+        - K9s:
+            href: https://k9scli.io/
+            description: Kubernetes terminal UI
+            icon: kubernetes.png
+
+    - Applications:
+        - Portfolio:
+            href: https://portfolio.zahaan.online
+            description: Personal portfolio
+            icon: mdi-web
+
+        - Linkding:
+            href: https://linkding.zahaan.online
+            description: Bookmark manager
+            icon: linkding.png
+
+        - Homepage:
+            href: https://homepage.zahaan.online
+            description: Homelab dashboard
+            icon: homepage.png
+
+    - Infrastructure:
+        - Proxmox:
+            href: https://192.168.29.2:8006
+            description: Main Proxmox node
+            icon: proxmox.png
+
+        - Proxmox Secondary:
+            href: https://192.168.29.3:8006
+            description: Secondary Proxmox node
+            icon: proxmox.png
+
+        - OpenMediaVault:
+            href: http://192.168.29.50
+            description: NAS storage
+            icon: openmediavault.png
+
+    - Observability:
+        - Grafana:
+            href: https://grafana.zahaan.online
+            description: Metrics and dashboards
+            icon: grafana.png
+
+        - Prometheus:
+            href: https://prometheus.zahaan.online
+            description: Kubernetes metrics
+            icon: prometheus.png
+
+    - Networking:
+        - Traefik:
+            href: https://traefik.io/
+            description: Kubernetes ingress controller
+            icon: traefik.png
+
+        - Cloudflare:
+            href: https://dash.cloudflare.com/
+            description: DNS and Cloudflare Tunnel
+            icon: cloudflare.png
+
+        - MetalLB:
+            href: https://metallb.universe.tf/
+            description: Kubernetes LoadBalancer implementation
+            icon: metallb.png
+
+  widgets.yaml: |
+    - kubernetes:
+        cluster:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
+          label: cluster
+
+        nodes:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
+
+    - resources:
+        backend: resources
+        expanded: true
+        cpu: true
+        memory: true
+        network: default
+
+    - search:
+        provider: duckduckgo
+        target: _blank
+
+  custom.css: ""
+
+  custom.js: ""
+
+  docker.yaml: ""

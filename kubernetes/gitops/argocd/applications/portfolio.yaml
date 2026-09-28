@@ -10,11 +10,14 @@ spec:
     repoURL: https://github.com/ZahaanMahajan/homelab.git
     targetRevision: main
     path: kubernetes/apps/portfolio
+    directory:
+      exclude: "**/*.sops.yaml"
 
   destination:
     server: https://kubernetes.default.svc
     namespace: portfolio
 
   syncPolicy:
-    syncOptions:
-      - CreateNamespace=false
+    automated:
+      prune: false
+      selfHeal: true
