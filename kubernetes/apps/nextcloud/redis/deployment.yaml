@@ -17,6 +17,15 @@ spec:
         app: redis
 
     spec:
+      nodeSelector:
+        workload: nextcloud
+
+      tolerations:
+        - key: workload
+          operator: Equal
+          value: nextcloud
+          effect: NoSchedule
+
       containers:
         - name: redis
           image: redis:8.2-alpine

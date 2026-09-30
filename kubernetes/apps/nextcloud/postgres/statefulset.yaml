@@ -18,6 +18,15 @@ spec:
         app: postgres
 
     spec:
+      nodeSelector:
+        workload: nextcloud
+
+      tolerations:
+        - key: workload
+          operator: Equal
+          value: nextcloud
+          effect: NoSchedule
+
       containers:
         - name: postgres
           image: postgres:18.6

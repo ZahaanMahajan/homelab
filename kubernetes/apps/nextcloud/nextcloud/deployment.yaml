@@ -17,6 +17,15 @@ spec:
         app: nextcloud
 
     spec:
+      nodeSelector:
+        workload: nextcloud
+
+      tolerations:
+        - key: workload
+          operator: Equal
+          value: nextcloud
+          effect: NoSchedule
+
       containers:
         - name: nextcloud
           image: nextcloud:apache
