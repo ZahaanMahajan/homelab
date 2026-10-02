@@ -19,12 +19,12 @@ spec:
 
     spec:
       nodeSelector:
-        workload: nextcloud
+        workload: worker-node-01
 
       tolerations:
         - key: workload
           operator: Equal
-          value: nextcloud
+          value: worker-node-01
           effect: NoSchedule
 
       containers:

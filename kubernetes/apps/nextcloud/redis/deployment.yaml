@@ -18,7 +18,7 @@ spec:
 
     spec:
       nodeSelector:
-        workload: nextcloud
+        workload: worker-node-01
 
       tolerations:
         - key: workload
