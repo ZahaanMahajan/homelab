@@ -18,6 +18,15 @@ spec:
         app: linkding
 
     spec:
+      nodeSelector:
+        workload: worker-node-01
+
+      tolerations:
+        - key: workload
+          operator: Equal
+          value: worker-node-01
+          effect: NoSchedule
+
       containers:
         - name: linkding
           image: ghcr.io/sissbruecker/linkding:1.47.0-alpine
