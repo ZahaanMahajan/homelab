@@ -1,0 +1,50 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/zahaanmahajan/portfolio
+  tag: 2b89b73cbafd72b9a0a7384f57889152141f3338
+  pullPolicy: IfNotPresent
+
+imagePullSecrets:
+  - name: ghcr-creds
+
+nodeSelector:
+  workload: worker-node-01
+
+tolerations:
+  - key: workload
+    operator: Equal
+    value: worker-node-01
+    effect: NoSchedule
+
+service:
+  type: ClusterIP
+  port: 80
+
+resources:
+  requests:
+    cpu: 25m
+    memory: 32Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi
+
+gateway:
+  enabled: true
+  name: portfolio-gateway
+  className: envoy-gateway
+  address: 192.168.29.241
+
+route:
+  enabled: true
+  hostname: portfolio.zahaan.online
+
+tls:
+  enabled: true
+  issuer: letsencrypt-production
+  secretName: portfolio-zahaan-online-tls
+
+envoyProxy:
+  enabled: true
+  name: portfolio-proxy
+  loadBalancerIP: 192.168.29.241

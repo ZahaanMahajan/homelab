@@ -1,16 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: portfolio
-  namespace: portfolio
+  name: {{ include "portfolio.fullname" . }}
   labels:
-    app.kubernetes.io/name: portfolio
+    app.kubernetes.io/name: {{ include "portfolio.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
 
   selector:
     matchLabels:
-      app.kubernetes.io/name: portfolio
+      app.kubernetes.io/name: {{ include "portfolio.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
 
   strategy:
     type: RollingUpdate
@@ -21,20 +22,24 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: portfolio
+        app.kubernetes.io/name: {{ include "portfolio.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
 
     spec:
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-        - name: ghcr-creds
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 
+      {{- with .Values.nodeSelector }}
       nodeSelector:
-        workload: worker-node-01
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 
+      {{- with .Values.tolerations }}
       tolerations:
-        - key: workload
-          operator: Equal
-          value: worker-node-01
-          effect: NoSchedule
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 
       securityContext:
         runAsNonRoot: true
@@ -46,8 +51,8 @@ spec:
 
       containers:
         - name: portfolio
-          image: ghcr.io/zahaanmahajan/portfolio:2b89b73cbafd72b9a0a7384f57889152141f3338
-          imagePullPolicy: IfNotPresent
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
 
           ports:
             - name: http
@@ -55,12 +60,7 @@ spec:
               protocol: TCP
 
           resources:
-            requests:
-              cpu: 25m
-              memory: 32Mi
-            limits:
-              cpu: 200m
-              memory: 128Mi
+            {{- toYaml .Values.resources | nindent 12 }}
 
           readinessProbe:
             httpGet:

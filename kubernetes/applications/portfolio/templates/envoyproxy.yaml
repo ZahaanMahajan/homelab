@@ -1,10 +1,8 @@
+{{- if .Values.envoyProxy.enabled }}
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: EnvoyProxy
-
 metadata:
-  name: portfolio-proxy
-  namespace: portfolio
-
+  name: {{ .Values.envoyProxy.name }}
 spec:
   provider:
     type: Kubernetes
@@ -15,4 +13,5 @@ spec:
           value:
             metadata:
               annotations:
-                metallb.io/loadBalancerIPs: "192.168.29.241"
+                metallb.io/loadBalancerIPs: "{{ .Values.envoyProxy.loadBalancerIP }}"
+{{- end }}
