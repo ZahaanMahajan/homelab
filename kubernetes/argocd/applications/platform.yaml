@@ -3,7 +3,6 @@ kind: Application
 metadata:
   name: platform
   namespace: argocd
-
 spec:
   project: default
 
@@ -11,9 +10,9 @@ spec:
     repoURL: https://github.com/ZahaanMahajan/homelab.git
     targetRevision: v2.0.0
     path: kubernetes/platform
-
     directory:
       recurse: true
+      exclude: '**/*.sops.yaml'
 
   destination:
     server: https://kubernetes.default.svc

@@ -3,7 +3,6 @@ kind: Application
 metadata:
   name: homelab-root
   namespace: argocd
-
 spec:
   project: default
 
