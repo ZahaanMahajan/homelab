@@ -10,8 +10,6 @@ spec:
     repoURL: https://github.com/ZahaanMahajan/homelab.git
     targetRevision: v2.0.0
     path: kubernetes/applications/linkding
-    directory:
-      exclude: '**/*.sops.yaml'
 
   destination:
     server: https://kubernetes.default.svc
@@ -22,4 +20,4 @@ spec:
       prune: false
       selfHeal: true
     syncOptions:
-      - CreateNamespace=false
+      - CreateNamespace=true

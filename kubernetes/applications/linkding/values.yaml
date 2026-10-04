@@ -1,0 +1,59 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/sissbruecker/linkding
+  tag: 1.47.0-alpine
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+nodeSelector:
+  workload: worker-node-01
+
+tolerations:
+  - key: workload
+    operator: Equal
+    value: worker-node-01
+    effect: NoSchedule
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+service:
+  type: ClusterIP
+  port: 9090
+
+persistence:
+  enabled: true
+  storageClass: nfs-storage
+  accessMode: ReadWriteOnce
+  size: 5Gi
+  mountPath: /etc/linkding/data
+
+secret:
+  name: linkding-secret
+
+application:
+  csrfTrustedOrigins: "https://linkding.zahaan.online"
+
+ingressRoute:
+  enabled: true
+  entryPoints:
+    - websecure
+  host: linkding.zahaan.online
+  tls:
+    secretName: linkding-tls
+
+certificate:
+  enabled: true
+  name: linkding-tls
+  secretName: linkding-tls
+  issuer:
+    name: letsencrypt-production
+    kind: ClusterIssuer
