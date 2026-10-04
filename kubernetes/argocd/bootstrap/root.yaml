@@ -1,21 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: portfolio
+  name: homelab-root
   namespace: argocd
+
 spec:
   project: default
 
   source:
     repoURL: https://github.com/ZahaanMahajan/homelab.git
-    targetRevision: main
-    path: kubernetes/applications/portfolio
-    directory:
-      exclude: "**/*.sops.yaml"
+    targetRevision: v2.0.0
+    path: kubernetes/argocd/applications
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: portfolio
+    namespace: argocd
 
   syncPolicy:
     automated:
