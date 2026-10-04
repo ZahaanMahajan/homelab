@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: https://github.com/ZahaanMahajan/homelab.git
     targetRevision: main
-    path: kubernetes/apps/linkding
+    path: kubernetes/applications/linkding
     directory:
       exclude: "**/*.sops.yaml"
 

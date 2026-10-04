@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: https://github.com/ZahaanMahajan/homelab.git
     targetRevision: main
-    path: kubernetes/apps/nextcloud
+    path: kubernetes/applications/nextcloud
     directory:
       exclude: "**/*.sops.yaml"
       recurse: true

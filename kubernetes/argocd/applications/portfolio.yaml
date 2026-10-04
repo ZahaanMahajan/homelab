@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: https://github.com/ZahaanMahajan/homelab.git
     targetRevision: main
-    path: kubernetes/apps/portfolio
+    path: kubernetes/applications/portfolio
     directory:
       exclude: "**/*.sops.yaml"
 
