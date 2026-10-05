@@ -11,6 +11,7 @@ spec:
     repoURL: https://github.com/ZahaanMahajan/homelab.git
     targetRevision: v2.0.0
     path: kubernetes/applications/nextcloud
+    helm: {}
 
   destination:
     server: https://kubernetes.default.svc
