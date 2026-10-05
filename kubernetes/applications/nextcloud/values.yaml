@@ -1,0 +1,128 @@
+replicaCount: 1
+
+image:
+  repository: nextcloud
+  tag: apache
+  pullPolicy: IfNotPresent
+
+nodeSelector:
+  workload: worker-node-01
+
+tolerations:
+  - key: workload
+    operator: Equal
+    value: worker-node-01
+    effect: NoSchedule
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 512Mi
+  limits:
+    cpu: 2000m
+    memory: 4Gi
+
+service:
+  type: ClusterIP
+  port: 80
+
+persistence:
+  enabled: true
+  storageClass: nfs-storage
+  accessMode: ReadWriteMany
+  size: 200Gi
+  mountPath: /var/www/html
+
+application:
+  trustedDomain: nextcloud.zahaan.online
+  phpUploadLimit: 2G
+
+secret:
+  name: nextcloud-secret
+
+certificate:
+  enabled: true
+  name: nextcloud-zahaan-online
+  secretName: nextcloud-zahaan-online-tls
+  issuer:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+
+ingress:
+  enabled: true
+  className: traefik
+  host: nextcloud.zahaan.online
+  tls:
+    secretName: nextcloud-zahaan-online-tls
+
+postgres:
+  image:
+    repository: postgres
+    tag: "18.6"
+    pullPolicy: IfNotPresent
+
+  replicaCount: 1
+
+  service:
+    port: 5432
+
+  persistence:
+    enabled: true
+    storageClass: nfs-storage
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    mountPath: /var/lib/postgresql
+
+  nodeSelector:
+    workload: worker-node-01
+
+  tolerations:
+    - key: workload
+      operator: Equal
+      value: worker-node-01
+      effect: NoSchedule
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+redis:
+  image:
+    repository: redis
+    tag: 8.2-alpine
+    pullPolicy: IfNotPresent
+
+  replicaCount: 1
+
+  service:
+    port: 6379
+
+  nodeSelector:
+    workload: worker-node-01
+
+  tolerations:
+    - key: workload
+      operator: Equal
+      value: nextcloud
+      effect: NoSchedule
+
+  resources:
+    requests:
+      cpu: 25m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 999
+    runAsGroup: 1000
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL

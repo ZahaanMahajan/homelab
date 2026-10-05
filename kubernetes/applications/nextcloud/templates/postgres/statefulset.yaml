@@ -2,11 +2,11 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: postgres
-  namespace: nextcloud
+  namespace: {{ .Release.Namespace }}
 
 spec:
   serviceName: postgres
-  replicas: 1
+  replicas: {{ .Values.postgres.replicaCount }}
 
   selector:
     matchLabels:
@@ -19,52 +19,46 @@ spec:
 
     spec:
       nodeSelector:
-        workload: worker-node-01
+        {{- toYaml .Values.postgres.nodeSelector | nindent 8 }}
 
       tolerations:
-        - key: workload
-          operator: Equal
-          value: worker-node-01
-          effect: NoSchedule
+        {{- toYaml .Values.postgres.tolerations | nindent 8 }}
 
       containers:
         - name: postgres
-          image: postgres:18.6
+          image: "{{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }}"
+          imagePullPolicy: {{ .Values.postgres.image.pullPolicy }}
 
           ports:
             - name: postgres
               containerPort: 5432
+              protocol: TCP
 
           env:
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
-                  name: nextcloud-secret
+                  name: {{ .Values.secret.name }}
                   key: POSTGRES_DB
 
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: nextcloud-secret
+                  name: {{ .Values.secret.name }}
                   key: POSTGRES_USER
 
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: nextcloud-secret
+                  name: {{ .Values.secret.name }}
                   key: POSTGRES_PASSWORD
 
           resources:
-            requests:
-              cpu: 100m
-              memory: 256Mi
-            limits:
-              cpu: 500m
-              memory: 512Mi
+            {{- toYaml .Values.postgres.resources | nindent 12 }}
 
           volumeMounts:
             - name: postgres-data
-              mountPath: /var/lib/postgresql
+              mountPath: {{ .Values.postgres.persistence.mountPath }}
 
       volumes:
         - name: postgres-data

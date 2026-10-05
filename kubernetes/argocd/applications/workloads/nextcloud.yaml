@@ -3,6 +3,7 @@ kind: Application
 metadata:
   name: nextcloud
   namespace: argocd
+
 spec:
   project: default
 
@@ -10,9 +11,6 @@ spec:
     repoURL: https://github.com/ZahaanMahajan/homelab.git
     targetRevision: v2.0.0
     path: kubernetes/applications/nextcloud
-    directory:
-      recurse: true
-      exclude: '**/*.sops.yaml'
 
   destination:
     server: https://kubernetes.default.svc
@@ -22,3 +20,6 @@ spec:
     automated:
       prune: false
       selfHeal: true
+
+    syncOptions:
+      - CreateNamespace=true

@@ -1,50 +1,47 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nextcloud
-  namespace: nextcloud
-
+  name: {{ include "nextcloud.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
-  replicas: 1
-
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: nextcloud
+      {{- include "nextcloud.selectorLabels" . | nindent 6 }}
 
   template:
     metadata:
       labels:
-        app: nextcloud
+        {{- include "nextcloud.selectorLabels" . | nindent 8 }}
 
     spec:
       nodeSelector:
-        workload: worker-node-01
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
 
       tolerations:
-        - key: workload
-          operator: Equal
-          value: worker-node-01
-          effect: NoSchedule
+        {{- toYaml .Values.tolerations | nindent 8 }}
 
       containers:
         - name: nextcloud
-          image: nextcloud:apache
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
 
           ports:
             - name: http
               containerPort: 80
+              protocol: TCP
 
           env:
             - name: NEXTCLOUD_ADMIN_USER
               valueFrom:
                 secretKeyRef:
-                  name: nextcloud-secret
+                  name: {{ .Values.secret.name }}
                   key: NEXTCLOUD_ADMIN_USER
 
             - name: NEXTCLOUD_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: nextcloud-secret
+                  name: {{ .Values.secret.name }}
                   key: NEXTCLOUD_ADMIN_PASSWORD
 
             - name: POSTGRES_HOST
@@ -53,19 +50,19 @@ spec:
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
-                  name: nextcloud-secret
+                  name: {{ .Values.secret.name }}
                   key: POSTGRES_DB
 
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: nextcloud-secret
+                  name: {{ .Values.secret.name }}
                   key: POSTGRES_USER
 
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: nextcloud-secret
+                  name: {{ .Values.secret.name }}
                   key: POSTGRES_PASSWORD
 
             - name: REDIS_HOST
@@ -74,29 +71,23 @@ spec:
             - name: REDIS_HOST_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: nextcloud-secret
+                  name: {{ .Values.secret.name }}
                   key: REDIS_PASSWORD
 
             - name: NEXTCLOUD_TRUSTED_DOMAINS
-              value: nextcloud.zahaan.online
+              value: {{ .Values.application.trustedDomain | quote }}
 
             - name: PHP_UPLOAD_LIMIT
-              value: "2G"
+              value: {{ .Values.application.phpUploadLimit | quote }}
 
           resources:
-            requests:
-              cpu: 500m
-              memory: 512Mi
-
-            limits:
-              cpu: 2000m
-              memory: 4Gi
+            {{- toYaml .Values.resources | nindent 12 }}
 
           volumeMounts:
             - name: nextcloud-data
-              mountPath: /var/www/html
+              mountPath: {{ .Values.persistence.mountPath }}
 
       volumes:
         - name: nextcloud-data
           persistentVolumeClaim:
-            claimName: nextcloud-data
+            claimName: {{ include "nextcloud.fullname" . }}-data

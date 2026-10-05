@@ -2,10 +2,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: redis
-  namespace: nextcloud
+  namespace: {{ .Release.Namespace }}
 
 spec:
-  replicas: 1
+  replicas: {{ .Values.redis.replicaCount }}
 
   selector:
     matchLabels:
@@ -18,17 +18,15 @@ spec:
 
     spec:
       nodeSelector:
-        workload: worker-node-01
+        {{- toYaml .Values.redis.nodeSelector | nindent 8 }}
 
       tolerations:
-        - key: workload
-          operator: Equal
-          value: nextcloud
-          effect: NoSchedule
+        {{- toYaml .Values.redis.tolerations | nindent 8 }}
 
       containers:
         - name: redis
-          image: redis:8.2-alpine
+          image: "{{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}"
+          imagePullPolicy: {{ .Values.redis.image.pullPolicy }}
 
           command:
             - redis-server
@@ -41,26 +39,16 @@ spec:
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: nextcloud-secret
+                  name: {{ .Values.secret.name }}
                   key: REDIS_PASSWORD
 
           ports:
             - name: redis
               containerPort: 6379
+              protocol: TCP
 
           resources:
-            requests:
-              cpu: 25m
-              memory: 64Mi
-            limits:
-              cpu: 100m
-              memory: 128Mi
+            {{- toYaml .Values.redis.resources | nindent 12 }}
 
           securityContext:
-            runAsNonRoot: true
-            runAsUser: 999
-            runAsGroup: 1000
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
+            {{- toYaml .Values.redis.securityContext | nindent 12 }}
