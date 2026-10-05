@@ -107,7 +107,7 @@ redis:
   tolerations:
     - key: workload
       operator: Equal
-      value: nextcloud
+      value: worker-node-01
       effect: NoSchedule
 
   resources:
