@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: ghcr.io/zahaanmahajan/portfolio
-  tag: 0202989efa24f2b2b0d543646fa311fcc0047325
+  tag: 167aec8765109c3445f733f8b6acbecb67254843
   pullPolicy: IfNotPresent
 
 imagePullSecrets:
