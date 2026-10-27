@@ -11,7 +11,12 @@ spec:
 
   storageClassName: {{ .Values.postgres.persistence.storageClass }}
 
+  {{- with .Values.postgres.persistence.volumeName }}
+  volumeName: {{ . }}
+  {{- end }}
+
   resources:
     requests:
       storage: {{ .Values.postgres.persistence.size }}
 {{- end }}
+

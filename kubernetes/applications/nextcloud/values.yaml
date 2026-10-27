@@ -29,6 +29,7 @@ service:
 persistence:
   enabled: true
   storageClass: cocktail-nfs-storage
+  volumeName: cocktail-nextcloud-data-pv
   accessMode: ReadWriteMany
   size: 100Gi
   mountPath: /var/www/html
@@ -69,6 +70,7 @@ postgres:
   persistence:
     enabled: true
     storageClass: cocktail-nfs-storage
+    volumeName: cocktail-postgres-data-pv
     accessMode: ReadWriteOnce
     size: 10Gi
     mountPath: /var/lib/postgresql
