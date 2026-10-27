@@ -17,9 +17,9 @@ spec:
     namespace: nextcloud
 
   syncPolicy:
-    automated:
-      prune: false
-      selfHeal: true
+    # automated:
+      # prune: false
+      # selfHeal: true
 
     syncOptions:
       - CreateNamespace=true
