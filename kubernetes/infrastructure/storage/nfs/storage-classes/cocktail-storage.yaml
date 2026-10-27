@@ -1,0 +1,18 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+
+metadata:
+  name: cocktail-nfs-storage
+
+provisioner: nfs.csi.k8s.io
+
+parameters:
+  server: 192.168.29.100
+  share: /kubernetes
+
+reclaimPolicy: Retain
+volumeBindingMode: Immediate
+allowVolumeExpansion: true
+
+mountOptions:
+  - nfsvers=4.1
