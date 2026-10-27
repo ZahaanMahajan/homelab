@@ -3,6 +3,7 @@ kind: Application
 metadata:
   name: linkding
   namespace: argocd
+
 spec:
   project: default
 
@@ -16,8 +17,9 @@ spec:
     namespace: linkding
 
   syncPolicy:
-    # automated:
-      # prune: false
-      # selfHeal: true
+    automated:
+      prune: false
+      selfHeal: true
+      
     syncOptions:
       - CreateNamespace=true
