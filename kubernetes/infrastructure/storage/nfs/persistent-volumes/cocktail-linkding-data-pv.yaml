@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: PersistentVolume
+
+metadata:
+  name: cocktail-linkding-data-pv
+
+spec:
+  capacity:
+    storage: 5Gi
+
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: cocktail-nfs-storage
+
+  mountOptions:
+    - nfsvers=4.1
+
+  csi:
+    driver: nfs.csi.k8s.io
+    volumeHandle: "192.168.29.100#kubernetes#pvc-875346cd-4274-4ed2-9b93-b48ae87cf9e6##"
+
+    volumeAttributes:
+      server: 192.168.29.100
+      share: /kubernetes
+      subdir: pvc-875346cd-4274-4ed2-9b93-b48ae87cf9e6
+

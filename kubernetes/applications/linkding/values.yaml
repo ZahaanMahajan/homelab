@@ -32,6 +32,7 @@ service:
 persistence:
   enabled: true
   storageClass: cocktail-nfs-storage
+  volumeName: cocktail-linkding-data-pv
   accessMode: ReadWriteOnce
   size: 5Gi
   mountPath: /etc/linkding/data
