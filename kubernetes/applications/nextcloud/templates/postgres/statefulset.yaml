@@ -18,6 +18,10 @@ spec:
         app: postgres
 
     spec:
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 999
+
       nodeSelector:
         {{- toYaml .Values.postgres.nodeSelector | nindent 8 }}
 
