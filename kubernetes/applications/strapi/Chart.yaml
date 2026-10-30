@@ -1,0 +1,7 @@
+apiVersion: v2
+name: strapi
+description: Strapi CMS with PostgreSQL
+type: application
+version: 1.0.0
+appVersion: "5.60.0"
+

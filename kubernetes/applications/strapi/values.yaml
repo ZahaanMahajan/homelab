@@ -1,0 +1,74 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/zahaanmahajan/strapi-api
+  tag: "153a3010d6634e84dc8c3e61c5c69046c99a30cc"
+  pullPolicy: IfNotPresent
+
+imagePullSecrets:
+  - name: ghcr-creds
+
+nodeSelector:
+  workload: worker-node-01
+
+tolerations:
+  - key: workload
+    operator: Equal
+    value: worker-node-01
+    effect: NoSchedule
+
+service:
+  type: ClusterIP
+  port: 1337
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 512Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+
+persistence:
+  enabled: true
+  storageClass: cocktail-nfs-storage
+  accessMode: ReadWriteMany
+  size: 10Gi
+  mountPath: /opt/app/public/uploads
+
+secret:
+  name: strapi-secret
+
+postgres:
+  image:
+    repository: postgres
+    tag: "17-alpine"
+    pullPolicy: IfNotPresent
+
+  service:
+    port: 5432
+
+  persistence:
+    enabled: true
+    storageClass: cocktail-nfs-storage
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    mountPath: /var/lib/postgresql/data
+
+  nodeSelector:
+    workload: worker-node-01
+
+  tolerations:
+    - key: workload
+      operator: Equal
+      value: worker-node-01
+      effect: NoSchedule
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+

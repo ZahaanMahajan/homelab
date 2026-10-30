@@ -1,0 +1,21 @@
+{{- if .Values.postgres.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-data
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/instance: {{ .Release.Name }}
+
+spec:
+  accessModes:
+    - {{ .Values.postgres.persistence.accessMode }}
+
+  storageClassName: {{ .Values.postgres.persistence.storageClass }}
+
+  resources:
+    requests:
+      storage: {{ .Values.postgres.persistence.size }}
+{{- end }}
+
