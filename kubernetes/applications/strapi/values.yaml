@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: ghcr.io/zahaanmahajan/strapi-api
-  tag: "153a3010d6634e84dc8c3e61c5c69046c99a30cc"
+  tag: 153a3010d6634e84dc8c3e61c5c69046c99a30cc
   pullPolicy: IfNotPresent
 
 imagePullSecrets:
