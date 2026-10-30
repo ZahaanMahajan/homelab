@@ -2,7 +2,7 @@ machine:
   network:
     interfaces:
       - deviceSelector:
-          hardwareAddr: "52:54:00:e2:68:60"
+          hardwareAddr: "52:54:00:e5:1d:90"
         dhcp: false
         addresses:
           - 192.168.29.23/24
