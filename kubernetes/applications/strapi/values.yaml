@@ -9,12 +9,12 @@ imagePullSecrets:
   - name: ghcr-creds
 
 nodeSelector:
-  workload: worker-node-01
+  workload: worker-node-03
 
 tolerations:
   - key: workload
     operator: Equal
-    value: worker-node-01
+    value: worker-node-03
     effect: NoSchedule
 
 service:
@@ -56,12 +56,12 @@ postgres:
     mountPath: /var/lib/postgresql/data
 
   nodeSelector:
-    workload: worker-node-01
+    workload: worker-node-03
 
   tolerations:
     - key: workload
       operator: Equal
-      value: worker-node-01
+      value: worker-node-03
       effect: NoSchedule
 
   resources:
