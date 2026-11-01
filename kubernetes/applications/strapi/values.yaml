@@ -92,8 +92,8 @@ gatewayAPI:
     replicas: 1
 
     image:
-      repository: kong
-      tag: "3.10"
+      repository: kong/kong-gateway
+      tag: "3.16"
       pullPolicy: IfNotPresent
 
     nodeSelector:
