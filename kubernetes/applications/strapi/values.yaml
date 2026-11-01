@@ -72,3 +72,48 @@ postgres:
       cpu: 500m
       memory: 512Mi
 
+gatewayAPI:
+  enabled: true
+
+  gateway:
+    name: strapi-kong
+    className: kong-strapi
+    hostname: strapi.zahaan.online
+
+    listener:
+      name: http
+      port: 80
+      protocol: HTTP
+
+  gatewayConfiguration:
+    name: strapi-kong-config
+
+  dataPlane:
+    replicas: 1
+
+    image:
+      repository: kong
+      tag: "3.10"
+      pullPolicy: IfNotPresent
+
+    nodeSelector:
+      workload: worker-node-03
+
+    tolerations:
+      - key: workload
+        operator: Equal
+        value: worker-node-03
+        effect: NoSchedule
+
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+
+  service:
+    type: LoadBalancer
+    annotations:
+      metallb.io/loadBalancerIPs: "192.168.29.242"

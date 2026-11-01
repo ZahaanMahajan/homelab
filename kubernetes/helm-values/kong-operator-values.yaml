@@ -1,0 +1,53 @@
+
+replicaCount: 1
+
+# Kong Operator CRDs
+ko-crds:
+  enabled: true
+  keep: true
+
+# Gateway API CRDs are already installed cluster-wide.
+# Do not let this chart manage or replace them.
+gwapi-standard-crds:
+  enabled: false
+
+gwapi-experimental-crds:
+  enabled: false
+
+# Schedule Kong Operator on worker-03.
+nodeSelector:
+  workload: worker-node-03
+
+tolerations:
+  - key: workload
+    operator: Equal
+    value: worker-node-03
+    effect: NoSchedule
+
+# Operator resource allocation.
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+# Namespace scope for Kong Operator.
+# It must watch its own namespace and the Strapi namespace.
+env:
+  watch_namespace: "kong-system,strapi"
+
+# Webhook certificate configuration.
+# Keep the existing self-signed certificate approach.
+global:
+  webhooks:
+    options:
+      certManager:
+        enabled: false
+
+  certificateAuthority:
+    options:
+      certManager:
+        enabled: false
+

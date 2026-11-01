@@ -1,0 +1,13 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+
+metadata:
+  name: kong-strapi
+
+spec:
+  controllerName: konghq.com/gateway-operator
+  parametersRef:
+    group: gateway-operator.konghq.com
+    kind: GatewayConfiguration
+    name: strapi-kong-config
+    namespace: strapi

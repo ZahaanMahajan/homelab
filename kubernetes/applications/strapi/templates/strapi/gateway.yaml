@@ -1,0 +1,22 @@
+{{- if .Values.gatewayAPI.enabled }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: {{ .Values.gatewayAPI.gateway.name }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+
+spec:
+  gatewayClassName: {{ .Values.gatewayAPI.gateway.className }}
+
+  listeners:
+    - name: {{ .Values.gatewayAPI.gateway.listener.name }}
+      hostname: {{ .Values.gatewayAPI.gateway.hostname | quote }}
+      port: {{ .Values.gatewayAPI.gateway.listener.port }}
+      protocol: {{ .Values.gatewayAPI.gateway.listener.protocol }}
+
+      allowedRoutes:
+        namespaces:
+          from: Same
+{{- end }}

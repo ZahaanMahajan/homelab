@@ -1,0 +1,38 @@
+{{- if .Values.gatewayAPI.enabled }}
+apiVersion: gateway-operator.konghq.com/v2beta1
+kind: GatewayConfiguration
+metadata:
+  name: {{ .Values.gatewayAPI.gatewayConfiguration.name }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+
+spec:
+  dataPlaneOptions:
+    deployment:
+      replicas: {{ .Values.gatewayAPI.dataPlane.replicas }}
+
+      podTemplateSpec:
+        spec:
+          nodeSelector:
+            {{- toYaml .Values.gatewayAPI.dataPlane.nodeSelector | nindent 12 }}
+
+          tolerations:
+            {{- toYaml .Values.gatewayAPI.dataPlane.tolerations | nindent 12 }}
+
+          containers:
+            - name: proxy
+              image: "{{ .Values.gatewayAPI.dataPlane.image.repository }}:{{ .Values.gatewayAPI.dataPlane.image.tag }}"
+              imagePullPolicy: {{ .Values.gatewayAPI.dataPlane.image.pullPolicy }}
+
+              resources:
+                {{- toYaml .Values.gatewayAPI.dataPlane.resources | nindent 16 }}
+
+    network:
+      services:
+        ingress:
+          type: {{ .Values.gatewayAPI.service.type }}
+
+          annotations:
+            {{- toYaml .Values.gatewayAPI.service.annotations | nindent 12 }}
+{{- end }}
