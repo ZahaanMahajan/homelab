@@ -1,9 +1,9 @@
 resource "proxmox_virtual_environment_vm" "dnsmasq" {
   name      = "dnsmasq"
-  node_name = "pve"
+  node_name = "pve-i3"
   vm_id     = 100
 
-  on_boot = false
+  on_boot = true
 
   cpu {
     cores = 1
@@ -34,13 +34,13 @@ resource "proxmox_virtual_environment_vm" "dnsmasq" {
 
 resource "proxmox_virtual_environment_vm" "control_plane" {
   name      = "control-plane"
-  node_name = "pve"
+  node_name = "pve-i3"
   vm_id     = 101
 
-  on_boot = false
+  on_boot = true
 
   cpu {
-    cores = 4
+    cores = 1
     type  = "x86-64-v2-AES"
   }
 
@@ -51,7 +51,7 @@ resource "proxmox_virtual_environment_vm" "control_plane" {
   }
 
   memory {
-    dedicated = 6144
+    dedicated = 5120
   }
 
   scsi_hardware = "virtio-scsi-single"
@@ -75,7 +75,7 @@ resource "proxmox_virtual_environment_vm" "worker_01" {
   node_name = "pve-i3"
   vm_id     = 102
 
-  on_boot = false
+  on_boot = true
 
   cpu {
     cores = 1
@@ -83,7 +83,7 @@ resource "proxmox_virtual_environment_vm" "worker_01" {
   }
 
   memory {
-    dedicated = 5120
+    dedicated = 4096
   }
 
   bios = "seabios"
@@ -113,7 +113,7 @@ resource "proxmox_virtual_environment_vm" "worker_02" {
   node_name = "pve-i3"
   vm_id     = 103
 
-  on_boot = false
+  on_boot = true
 
   cpu {
     cores = 1
@@ -121,7 +121,7 @@ resource "proxmox_virtual_environment_vm" "worker_02" {
   }
 
   memory {
-    dedicated = 5120
+    dedicated = 6144
   }
 
   bios = "seabios"
@@ -146,48 +146,3 @@ resource "proxmox_virtual_environment_vm" "worker_02" {
   }
 }
 
-resource "proxmox_virtual_environment_vm" "nas" {
-  name      = "nas"
-  node_name = "pve-i3"
-  vm_id     = 104
-
-  on_boot = false
-
-  cpu {
-    cores = 2
-    type  = "x86-64-v2-AES"
-  }
-
-  memory {
-    dedicated = 4096
-  }
-
-  bios = "seabios"
-
-  operating_system {
-    type = "l26"
-  }
-
-  scsi_hardware = "virtio-scsi-single"
-
-  # NAS operating-system disk
-  disk {
-    datastore_id = "local-lvm"
-    interface    = "scsi0"
-    size         = 32
-    iothread     = true
-  }
-
-  # Physical 1 TB HDD passed directly through from pve-i3
-  disk {
-    datastore_id      = ""
-    path_in_datastore = "/dev/disk/by-id/ata-ST1000DM003-1SB102_ZN14TJN6"
-    interface         = "scsi1"
-  }
-
-  network_device {
-    bridge      = "vmbr0"
-    mac_address = "BC:24:11:77:E9:9F"
-    firewall    = true
-  }
-}
