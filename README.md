@@ -56,7 +56,7 @@ The current infrastructure is split across two physical Proxmox VE
 hosts.
 
 <div align="center">
-  <img src="assets/proxmox-talos-architecture.png" alt="Architecture" width="100%" />
+  <img src="assets/homelab-architecture.png" alt="Architecture" width="100%" />
 </div>
 
 
