@@ -1,95 +1,43 @@
 # Homelab Kubernetes Platform
 
-A self-hosted Kubernetes platform built on **Proxmox VE + Talos Linux**, managed through declarative configuration and GitOps.
+A self-hosted Kubernetes platform built on **Proxmox VE and Talos Linux**, managed through declarative configuration, Helm, Terraform, and GitOps.
 
-This repository is both a production-style homelab and a practical Kubernetes/CKA learning environment. It covers cluster infrastructure, Kubernetes networking, TLS, storage, GitOps, platform services, application workloads, and hands-on Kubernetes labs.
-
-> **Current architecture:** 2 Proxmox hosts → Talos Kubernetes cluster → 1 control plane + 2 workers, with MetalLB, Gateway/Ingress components, cert-manager, Cloudflare integration, NFS CSI storage, Argo CD, and application Helm charts.
-
----
+This repository serves as both a production-style homelab and a practical Kubernetes/CKA learning environment.
 
 ## Architecture
 
 ```text
-                              Internet
-                                 │
-                                 ▼
-                           Cloudflare DNS
-                                 │
-                    ┌────────────┴────────────┐
-                    │                         │
-             Cloudflare Tunnel          Public DNS/TLS
-                    │                         │
-                    ▼                         ▼
-             cloudflared                 MetalLB / Gateway
-                    │                         │
-                    └────────────┬────────────┘
-                                 │
-                                 ▼
-                     ┌─────────────────────────┐
-                     │   Talos Kubernetes      │
-                     │      1.36.2             │
-                     └────────────┬────────────┘
-                                  │
-              ┌───────────────────┼───────────────────┐
-              │                   │                   │
-              ▼                   ▼                   ▼
-       Control Plane         Worker 01            Worker 02
-       192.168.29.20       192.168.29.21        192.168.29.22
-              │                   │                   │
-              └───────────────────┼───────────────────┘
-                                  │
-                   ┌──────────────┴──────────────┐
-                   │                             │
-               Argo CD                     Platform Services
-                   │                             │
-          ┌────────┴────────┐             Homepage / Monitoring
-          │                 │
-       Helm Apps       Infrastructure
-          │                 │
-   ┌──────┼──────┐    ┌─────┼──────────────┐
-   │      │      │    │     │              │
-Linkding Nextcloud Portfolio MetalLB cert-manager NFS CSI
+                 Internet
+                    |
+              Cloudflare DNS
+                    |
+          +---------+----------+
+          |                    |
+    Cloudflare Tunnel     MetalLB / Gateway
+          |                    |
+          +---------+----------+
+                    |
+             Talos Kubernetes
+                v1.36.2
+                    |
+        +-----------+-----------+
+        |           |           |
+    Control Plane  Worker 01  Worker 02
+        |           |           |
+        +-----------+-----------+
+                    |
+          +---------+---------+
+          |                   |
+        Argo CD         Platform Services
+          |                   |
+    +-----+------+       +----+------+
+    |            |       |           |
+ Infrastructure Apps  Homepage  Monitoring
 ```
-
-The current infrastructure is split across two physical Proxmox VE
-hosts.
 
 <div align="center">
-  <img src="assets/homelab-architecture.png" alt="Architecture" width="100%" />
+  <img src="assets/homelab-architecture.png" alt="Homelab Architecture" width="100%" />
 </div>
-
-
-The repository is intentionally split into infrastructure, platform services, applications, labs, and documentation so each layer can evolve independently.
-
----
-
-## Repository Map
-
-```text
-homelab/
-├── assets/                 Architecture diagrams and images
-├── docs/                   Detailed operational and setup documentation
-├── kubernetes/
-│   ├── applications/       Application Helm charts
-│   ├── argocd/             Argo CD applications and bootstrap
-│   ├── infrastructure/     Cluster infrastructure components
-│   ├── platform/           Shared platform services
-│   └── README.md
-├── labs/                   CKA-oriented Kubernetes experiments
-├── proxmox/                Proxmox infrastructure as Terraform
-├── scripts/                Operational/helper scripts
-├── talos/                  Talos machine configuration and patches
-└── README.md
-```
-
-Start with:
-
-- [Kubernetes Platform](kubernetes/README.md)
-- [Talos](talos/README.md)
-- [Proxmox](proxmox/README.md)
-
----
 
 ## Infrastructure Stack
 
@@ -98,30 +46,27 @@ Start with:
 | Virtualization | Proxmox VE |
 | Kubernetes OS | Talos Linux |
 | Kubernetes | v1.36.2 |
-| Container runtime | containerd 2.2.6 |
+| Container Runtime | containerd |
 | CNI | Flannel |
-| Load balancing | MetalLB |
-| Gateway / ingress | Gateway API + Traefik/Ingress components |
-| TLS | cert-manager + Let's Encrypt |
-| External DNS / edge | Cloudflare |
+| Load Balancing | MetalLB |
+| Gateway / Ingress | Gateway API, Traefik |
+| TLS | cert-manager, Let's Encrypt |
+| DNS / Edge | Cloudflare, Pi-hole |
 | Tunnel | cloudflared |
 | Storage | NFS CSI |
 | GitOps | Argo CD |
-| Application packaging | Helm |
-| Internal DNS | Pi-hole |
-| IaC for Proxmox | Terraform |
+| Packaging | Helm |
+| Infrastructure as Code | Terraform |
 
----
+## Cluster Nodes
 
-## Current Cluster
+| Node | Role | IP |
+|---|---|---|
+| `talos-controlplane-01` | Control Plane | `192.168.29.20` |
+| `talos-worker-01` | Worker | `192.168.29.21` |
+| `talos-worker-02` | Worker | `192.168.29.22` |
 
-| Node | Role | IP | Proxmox Host |
-|---|---|---|---|
-| `talos-controlplane-01` | Control plane | `192.168.29.20` | `pve` |
-| `talos-worker-01` | Worker | `192.168.29.21` | `pve-i3` |
-| `talos-worker-02` | Worker | `192.168.29.22` | `pve-i3` |
-
-### Cluster networking
+**Networking**
 
 ```text
 LAN:             192.168.29.0/24
@@ -134,461 +79,131 @@ Service CIDR:    10.96.0.0/12
 Kubernetes API:  https://192.168.29.20:6443
 ```
 
-The cluster intentionally remains a **single-control-plane** deployment. It is suitable for learning and homelab workloads but is not an HA control plane.
+The cluster uses a single control plane and is intended for homelab workloads and learning.
 
----
-
-## Kubernetes Repository Structure
-
-### `kubernetes/infrastructure`
-
-Cluster-level components that provide capabilities to workloads:
+## Repository Structure
 
 ```text
-infrastructure/
-├── networking/
-│   ├── cert-manager/
-│   ├── cloudflared/
-│   ├── gateway-api/
-│   └── metallb/
-├── security/
-└── storage/
-    └── nfs/
+homelab/
+├── assets/                 Architecture diagrams
+├── docs/                   Setup and operational guides
+├── kubernetes/
+│   ├── applications/       Application Helm charts
+│   ├── argocd/             GitOps configuration
+│   ├── infrastructure/     Networking, security, storage
+│   └── platform/           Shared platform services
+├── labs/                   CKA learning exercises
+├── proxmox/                Terraform configuration
+├── scripts/                Helper scripts
+├── talos/                  Talos configuration
+└── README.md
 ```
 
-### `kubernetes/platform`
+## GitOps
 
-Shared services used by the platform itself:
+Argo CD manages Kubernetes resources through declarative Git configuration.
 
 ```text
-platform/
-├── argocd/
-├── homepage/
-└── monitoring/
+Git Repository
+      |
+      v
+   Argo CD
+      |
+      +-- Infrastructure
+      |
+      +-- Platform Services
+      |
+      +-- Applications
+      |
+      v
+Kubernetes Cluster
 ```
 
-### `kubernetes/applications`
-
-Workload-specific Helm charts:
-
-```text
-applications/
-├── linkding/
-├── nextcloud/
-└── portfolio/
-```
-
-### `kubernetes/argocd`
-
-GitOps control plane:
-
-```text
-argocd/
-├── bootstrap/
-│   └── root.yaml
-└── applications/
-    ├── applications.yaml
-    ├── infrastructure.yaml
-    ├── platform.yaml
-    └── workloads/
-        ├── linkding.yaml
-        ├── nextcloud.yaml
-        └── portfolio.yaml
-```
-
----
-
-## GitOps Model
-
-Argo CD is the reconciliation layer for the Kubernetes repository.
-
-```text
-Git repository
-      │
-      ▼
- Argo CD
-      │
-      ├── Infrastructure
-      │     ├── MetalLB
-      │     ├── cert-manager
-      │     ├── Gateway API
-      │     ├── cloudflared
-      │     └── NFS
-      │
-      ├── Platform
-      │     ├── Argo CD
-      │     ├── Homepage
-      │     └── Monitoring
-      │
-      └── Applications
-            ├── Linkding
-            ├── Nextcloud
-            └── Portfolio
-```
-
-The intended operating model is:
-
-> Change Git → Argo CD reconciles → Kubernetes reaches the declared state.
-
----
+**Workflow:** Commit changes to Git → Argo CD reconciles the cluster → Kubernetes reaches the declared state.
 
 ## Storage
 
-The cluster uses an external NAS/NFS architecture rather than local Kubernetes disks for persistent application data.
+Persistent application data is provided through an external NAS using the NFS CSI driver.
 
 ```text
-Application
-    │
-    ▼
-PVC
-    │
-    ▼
-StorageClass
-    │
-    ▼
-NFS CSI driver
-    │
-    ▼
-NFS server / NAS
+Application → PVC → StorageClass → NFS CSI → NAS
 ```
 
-See [Kubernetes NFS CSI Integration](docs/Kubernetes-NFS-CSI-Integration.md).
+See [NFS CSI Integration](docs/Kubernetes-NFS-CSI-Integration.md).
 
----
+## Networking and TLS
 
-## TLS and Networking
-
-The repository contains multiple networking layers:
-
-- MetalLB provides `LoadBalancer` IP allocation.
-- Gateway API provides modern Kubernetes traffic routing.
-- Existing ingress resources are retained where applications still use them.
-- cert-manager obtains and renews certificates.
-- Cloudflare provides DNS and external edge functionality.
-- cloudflared provides tunnel-based exposure where required.
-
-See:
-
-- [MetalLB](docs/MetalLB-Setup.md)
-- [TLS](docs/Kubernetes-TLS.md)
-- [Homelab TLS Setup](docs/Homelab-TLS-Setup.md)
-- [Pi-hole Internal DNS](docs/Pihole-Internal-DNS.md)
-
----
+- **MetalLB:** LoadBalancer IP allocation.
+- **Gateway API:** Kubernetes traffic routing.
+- **cert-manager:** Automated TLS certificates.
+- **Cloudflare:** DNS and external edge services.
+- **cloudflared:** Tunnel-based external access.
+- **Pi-hole:** Internal DNS resolution.
 
 ## Applications
 
-Current Helm-managed workloads include:
+Current application workloads:
 
-### Linkding
-
-A lightweight bookmark management application with:
-
-- Deployment
-- Service
-- PVC
-- TLS certificate
-- IngressRoute
-
-### Nextcloud
-
-A stateful application stack containing:
-
-- Nextcloud
-- PostgreSQL StatefulSet
-- Redis
-- Persistent storage
-- Services
-- TLS
-- Ingress
-
-### Portfolio
-
-A web application using:
-
-- Deployment
-- Service
-- Gateway API
-- HTTPRoute
-- EnvoyProxy configuration
-- TLS
-
-Application-specific configuration belongs under `kubernetes/applications`.
-
----
+| Application | Purpose |
+|---|---|
+| Linkding | Bookmark management |
+| Nextcloud | Personal cloud and file management |
+| Portfolio | Personal portfolio website |
 
 ## Platform Services
 
-Current platform layer:
-
-### Argo CD
-
-GitOps reconciliation and application lifecycle management.
-
-### Homepage
-
-Internal platform dashboard for exposing links and cluster services.
-
-### Monitoring
-
-Monitoring-related platform resources and secrets are maintained under:
-
-```text
-kubernetes/platform/monitoring/
-```
-
-The monitoring stack is intentionally kept separate from application workloads.
-
----
+| Service | Purpose |
+|---|---|
+| Argo CD | GitOps and application management |
+| Homepage | Internal dashboard |
+| Monitoring | Cluster observability |
 
 ## CKA Labs
 
-The `labs/` directory is a separate learning track.
+The `labs/` directory contains practical Kubernetes exercises covering:
 
-```text
-labs/
-├── 01-pod
-├── 02-replicaset
-├── 03-deployment
-├── 04-daemonset
-├── ...
-└── 26-pod-anti-affinity
-```
+- Pods and ReplicaSets
+- Deployments and DaemonSets
+- Scheduling and affinity
+- ConfigMaps and Secrets
+- Storage and persistent volumes
+- Networking and services
+- Troubleshooting
 
-Each lab is designed to be:
-
-1. Reproducible.
-2. Easy to inspect.
-3. Easy to break intentionally.
-4. Useful for CKA troubleshooting practice.
-
-The labs are deliberately kept separate from production-style cluster manifests.
-
----
-
-## Proxmox Infrastructure
-
-Proxmox configuration is managed under:
-
-```text
-proxmox/
-```
-
-Terraform files describe:
-
-- Providers
-- Cluster configuration
-- Network configuration
-- Storage
-- VMs
-- Outputs
-- Variables
-
-The Terraform state and variable files require special handling and should not be committed if they contain credentials, secrets, or environment-specific sensitive data.
-
----
-
-## Talos Configuration
-
-Talos configuration is maintained under:
-
-```text
-talos/
-├── patches/
-├── generate-configs.sh
-├── controlplane.yaml
-├── worker.yaml
-└── secrets/
-```
-
-Generated Talos credentials and machine configuration must be treated as sensitive.
-
-The reusable patches describe node-specific configuration such as:
-
-- Hostnames
-- Static networking
-- Kubernetes endpoint
-- API server SANs
-- Worker disk/network configuration
-
-See [Talos README](../talos/README.md).
-
----
-
-## Security
-
-This repository is intended to be version-controlled infrastructure.
-
-Never commit:
-
-- Talos secrets
-- `talosconfig`
-- Kubernetes admin credentials
-- API tokens
-- Cloudflare tunnel tokens
-- Private keys
-- Passwords
-- Cloud credentials
-- Sensitive Terraform state
-- Sensitive `terraform.tfvars`
-
-Before committing:
-
-```bash
-git status
-git diff --cached --name-only
-git diff --cached
-```
-
-Also verify ignored files:
-
-```bash
-git check-ignore -v <file>
-```
-
----
-
-## Operational Philosophy
-
-This homelab follows a layered approach:
-
-```text
-Physical / Virtual Infrastructure
-            ↓
-        Talos Linux
-            ↓
-       Kubernetes
-            ↓
-      Infrastructure
-            ↓
-         Platform
-            ↓
-      Applications
-            ↓
-      GitOps lifecycle
-```
-
-A component should live at the lowest layer that logically owns it.
-
-For example:
-
-- Proxmox VM definitions → `proxmox/`
-- Talos machine configuration → `talos/`
-- MetalLB → `kubernetes/infrastructure/`
-- Argo CD → `kubernetes/platform/` and `kubernetes/argocd/`
-- Linkding → `kubernetes/applications/linkding/`
-- CKA exercises → `labs/`
-
----
-
-## Verification
-
-Basic cluster checks:
-
-```bash
-kubectl get nodes -o wide
-kubectl get pods -A
-kubectl get svc -A
-kubectl get pvc -A
-kubectl get storageclass
-kubectl get gateway -A
-kubectl get httproute -A
-kubectl get certificates -A
-kubectl get applications -A
-```
-
-Talos:
-
-```bash
-talosctl version
-talosctl get members
-talosctl get etcdmembers
-talosctl get machinestatus
-talosctl services
-talosctl health
-```
-
----
+Labs are maintained separately from platform manifests to keep learning experiments isolated.
 
 ## Documentation
 
-Detailed procedures live in `docs/` rather than the root README.
+Detailed setup and operational guides are maintained in `docs/`.
 
-```text
-docs/
-├── Architecture.md
-├── Operations.md
-├── Proxmox-Homelab-Setup.md
-├── Pihole-Setup.md
-├── Pihole-Internal-DNS.md
-├── NAS-Setup.md
-├── Kubernetes-NFS-CSI-Integration.md
-├── MetalLB-Setup.md
-├── Kubernetes-TLS.md
-└── Homelab-TLS-Setup.md
-```
+- [Architecture](docs/Architecture.md)
+- [Proxmox Setup](docs/Proxmox-Homelab-Setup.md)
+- [NAS Setup](docs/NAS-Setup.md)
+- [NFS CSI Integration](docs/Kubernetes-NFS-CSI-Integration.md)
+- [MetalLB Setup](docs/MetalLB-Setup.md)
+- [Kubernetes TLS](docs/Kubernetes-TLS.md)
+- [Internal DNS](docs/Pihole-Internal-DNS.md)
 
-The root README is intentionally an **overview**, not a complete runbook.
+See the [Kubernetes documentation](kubernetes/README.md), [Talos configuration](talos/README.md), and [Proxmox configuration](proxmox/README.md) for implementation details.
 
----
+## Security
+
+Never commit sensitive configuration, including:
+
+- Talos secrets and credentials
+- Kubernetes admin credentials
+- API tokens and passwords
+- Cloudflare tunnel tokens
+- Private keys
+- Terraform state containing secrets
+- Sensitive `.tfvars` files
 
 ## Project Goals
 
-The homelab is being used to build practical skills in:
+This homelab focuses on developing practical skills in:
 
-- Kubernetes administration
-- CKA preparation
-- Talos Linux
-- Proxmox
-- GitOps
-- Helm
-- Kubernetes networking
-- Gateway API
-- TLS and certificate management
-- DNS
-- Persistent storage
-- NFS CSI
-- RBAC and security
-- Observability
-- Application operations
-- Infrastructure as Code
-- Platform engineering
+**Kubernetes · CKA · Talos Linux · Proxmox · GitOps · Helm · Terraform · Networking · Gateway API · TLS · Storage · Observability · Platform Engineering**
 
 ---
 
-## Current Direction
-
-The repository has moved beyond a basic Kubernetes cluster and is now structured as a small platform:
-
-```text
-Infrastructure
-     │
-     ├── Proxmox
-     ├── Talos
-     └── NFS
-
-Kubernetes Infrastructure
-     │
-     ├── MetalLB
-     ├── cert-manager
-     ├── Gateway API
-     └── cloudflared
-
-Platform
-     │
-     ├── Argo CD
-     ├── Homepage
-     └── Monitoring
-
-Workloads
-     │
-     ├── Linkding
-     ├── Nextcloud
-     └── Portfolio
-
-Learning
-     │
-     └── CKA labs
-```
-
-This separation is the primary organizational model for the repository going forward.
+*An evolving homelab focused on building, operating, and understanding a Kubernetes platform through hands-on engineering.*
