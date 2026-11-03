@@ -51,7 +51,7 @@ This repository serves as both a production-style homelab and a practical Kubern
 | Load Balancing | MetalLB |
 | Gateway / Ingress | Gateway API, Traefik |
 | TLS | cert-manager, Let's Encrypt |
-| DNS / Edge | Cloudflare, Pi-hole |
+| DNS / Edge | Cloudflare, DNSMASQ |
 | Tunnel | cloudflared |
 | Storage | NFS CSI |
 | GitOps | Argo CD |
@@ -65,13 +65,14 @@ This repository serves as both a production-style homelab and a practical Kubern
 | `talos-controlplane-01` | Control Plane | `192.168.29.20` |
 | `talos-worker-01` | Worker | `192.168.29.21` |
 | `talos-worker-02` | Worker | `192.168.29.22` |
+| `talos-worker-03` | Worker | `192.168.29.23` |
 
 **Networking**
 
 ```text
 LAN:             192.168.29.0/24
 Gateway:         192.168.29.1
-Pi-hole:         192.168.29.10
+DNSMASQ:         192.168.29.10
 
 Pod CIDR:        10.244.0.0/16
 Service CIDR:    10.96.0.0/12
@@ -138,7 +139,7 @@ See [NFS CSI Integration](docs/Kubernetes-NFS-CSI-Integration.md).
 - **cert-manager:** Automated TLS certificates.
 - **Cloudflare:** DNS and external edge services.
 - **cloudflared:** Tunnel-based external access.
-- **Pi-hole:** Internal DNS resolution.
+- **DNSMASQ** Internal DNS resolution.
 
 ## Applications
 
@@ -182,7 +183,7 @@ Detailed setup and operational guides are maintained in `docs/`.
 - [NFS CSI Integration](docs/Kubernetes-NFS-CSI-Integration.md)
 - [MetalLB Setup](docs/MetalLB-Setup.md)
 - [Kubernetes TLS](docs/Kubernetes-TLS.md)
-- [Internal DNS](docs/Pihole-Internal-DNS.md)
+- [Internal DNS](docs/Internal-DNS.md)
 
 See the [Kubernetes documentation](kubernetes/README.md), [Talos configuration](talos/README.md), and [Proxmox configuration](proxmox/README.md) for implementation details.
 
