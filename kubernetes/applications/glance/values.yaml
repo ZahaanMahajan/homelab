@@ -6,12 +6,20 @@ replicaCount: 1
 
 image:
   repository: glanceapp/glance
-  tag: ""            # defaults to v<appVersion>
+  tag: ""
   pullPolicy: IfNotPresent
 
-# Pre-existing Secrets (not managed by this chart)
 secrets:
-  github: glance-github    # key: GITHUB_TOKEN
+  github: glance-github
+
+nodeSelector:
+  workload: worker-node-01
+
+tolerations:
+  - key: workload
+    operator: Equal
+    value: worker-node-01
+    effect: NoSchedule
 
 service:
   type: ClusterIP
