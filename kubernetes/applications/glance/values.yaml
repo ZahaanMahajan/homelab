@@ -316,11 +316,12 @@ config:
             - type: videos
               title: Homelab & DevOps YouTube
               style: grid-cards
-              limit: 8
+              limit: 15
               channels:
                 - UCOk-gHyjcWZNj3Br4oxwh0A   # Techno Tim
-                - UCdngmbVKX1Tgre699-XLlUA   # TechWorld with Nana
+                - UCDAck-gFPTrgTx_qp59-bQA   # MischaVanDenBurg
                 - UCR-DXc1voovS8nhAvccRZhg   # Jeff Geerling
+                - UCgdTVe88YVSrOZ9qKumhULQ   # Hardware Haven 
 
         # ---------------- RIGHT: system + community feeds ----------------
         - size: small
