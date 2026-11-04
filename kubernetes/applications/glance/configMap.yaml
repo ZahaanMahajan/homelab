@@ -9,12 +9,6 @@ data:
       port: 8080
       proxied: true
 
-    # auth:
-    #   secret-key: ${GLANCE_SECRET_KEY}
-    #   users:
-    #     admin:
-    #       password-hash: ${GLANCE_PASSWORD_HASH}
-
     branding:
       app-name: Zahaan's Homelab
       logo-text: Z
@@ -178,9 +172,9 @@ data:
                 title: Service Availability
                 cache: 1m
                 sites:
-                  # ArgoCD fix: Glance checks from inside the cluster, so probe the
-                  # in-cluster Service instead of the public hostname. The public URL
-                  # is still what you get when you click the tile.
+                  # Probes the in-cluster Service over plain http because
+                  # ArgoCD runs with server.insecure=true. Clicking the tile
+                  # still opens the public URL.
                   - title: ArgoCD
                     url: https://argocd.zahaan.online
                     check-url: http://argocd-server.argocd.svc.cluster.local/healthz
@@ -204,6 +198,9 @@ data:
                 title: GitHub Profile
                 cache: 1h
                 url: https://api.github.com/users/ZahaanMahajan
+                headers:
+                  Authorization: Bearer ${GITHUB_TOKEN}
+                  Accept: application/vnd.github+json
                 template: |
                   <div class="flex justify-between text-center margin-block-3">
                     <div>
@@ -227,7 +224,7 @@ data:
                     show-source-icon: true
                     limit: 10
                     collapse-after: 6
-                    token: ${GITHUB_TOKEN}   # uncomment to avoid GitHub rate limits
+                    token: ${GITHUB_TOKEN}
                     repositories:
                       - siderolabs/talos
                       - kubernetes/kubernetes
@@ -239,6 +236,7 @@ data:
                     show-source-icon: true
                     limit: 10
                     collapse-after: 6
+                    token: ${GITHUB_TOKEN}
                     repositories:
                       - envoyproxy/gateway
                       - cert-manager/cert-manager
@@ -249,6 +247,7 @@ data:
                     show-source-icon: true
                     limit: 10
                     collapse-after: 6
+                    token: ${GITHUB_TOKEN}
                     repositories:
                       - prometheus/prometheus
                       - grafana/grafana
@@ -258,6 +257,7 @@ data:
                     show-source-icon: true
                     limit: 10
                     collapse-after: 6
+                    token: ${GITHUB_TOKEN}
                     repositories:
                       - glanceapp/glance
                       - docker/compose
@@ -269,12 +269,14 @@ data:
                 widgets:
                   - type: repository
                     repository: ZahaanMahajan/homelab
+                    token: ${GITHUB_TOKEN}
                     pull-requests-limit: 5
                     issues-limit: 5
                     commits-limit: 5
 
                   - type: repository
                     repository: argoproj/argo-cd
+                    token: ${GITHUB_TOKEN}
                     pull-requests-limit: 3
                     issues-limit: 3
                     commits-limit: 5
@@ -337,33 +339,3 @@ data:
                   - devops
                   - linux
                   - practices
-
-              - type: group
-                widgets:
-                  - type: reddit
-                    title: r/kubernetes
-                    subreddit: kubernetes
-                    show-thumbnails: false
-                    limit: 10
-                    collapse-after: 5
-
-                  - type: reddit
-                    title: r/homelab
-                    subreddit: homelab
-                    show-thumbnails: true
-                    limit: 10
-                    collapse-after: 5
-
-                  - type: reddit
-                    title: r/selfhosted
-                    subreddit: selfhosted
-                    show-thumbnails: false
-                    limit: 10
-                    collapse-after: 5
-
-                  - type: reddit
-                    title: r/devops
-                    subreddit: devops
-                    show-thumbnails: false
-                    limit: 10
-                    collapse-after: 5
