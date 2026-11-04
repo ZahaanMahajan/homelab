@@ -1,0 +1,273 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: glance-config
+  namespace: glance
+data:
+  glance.yml: |
+    server:
+      port: 8080
+      proxied: true
+
+    auth:
+      secret-key: ${GLANCE_SECRET_KEY}
+      users:
+        admin:
+          password-hash: ${GLANCE_PASSWORD_HASH}
+
+    branding:
+      app-name: Zahaan's Homelab
+      logo-text: Z
+      hide-footer: false
+      custom-footer: |
+        Powered by <a href="https://github.com/glanceapp/glance">Glance</a> · Homelab
+
+    theme:
+      background-color: 225 14 12
+      primary-color: 210 80 65
+      positive-color: 145 55 55
+      negative-color: 0 75 65
+      contrast-multiplier: 1.15
+      disable-picker: false
+
+    pages:
+      # ==========================================
+      # HOME
+      # ==========================================
+      - name: Home
+        width: wide
+        columns:
+          - size: small
+            widgets:
+              - type: clock
+                hour-format: 24h
+                timezones:
+                  - timezone: Asia/Kolkata
+                    label: Kashmir
+
+              - type: calendar
+                first-day-of-week: monday
+
+          - size: full
+            widgets:
+              - type: bookmarks
+                title: Quick Access
+                groups:
+                  - title: Homelab
+                    links:
+                      - title: ArgoCD
+                        url: https://argocd.zahaan.online
+                        icon: si:argo
+                      - title: Portfolio
+                        url: https://portfolio.zahaan.online
+                        icon: si:vercel
+                      - title: Homelab Repository
+                        url: https://github.com/ZahaanMahajan/homelab
+                        icon: si:github
+
+                  - title: Development
+                    links:
+                      - title: GitHub
+                        url: https://github.com/ZahaanMahajan
+                        icon: si:github
+                      - title: Kubernetes
+                        url: https://kubernetes.io/docs/
+                        icon: si:kubernetes
+                      - title: CNCF
+                        url: https://www.cncf.io/
+                        icon: si:cncf
+
+              - type: monitor
+                title: Service Availability
+                cache: 1m
+                sites:
+                  - title: ArgoCD
+                    url: https://argocd.zahaan.online
+                    icon: si:argo
+                  - title: Portfolio
+                    url: https://portfolio.zahaan.online
+                    icon: si:vercel
+
+          - size: small
+            widgets:
+              - type: hacker-news
+                limit: 10
+                collapse-after: 5
+
+      # ==========================================
+      # HOMELAB
+      # ==========================================
+      - name: Homelab
+        width: wide
+        columns:
+          - size: small
+            widgets:
+              - type: bookmarks
+                title: Platform
+                groups:
+                  - links:
+                      - title: ArgoCD
+                        url: https://argocd.zahaan.online
+                        icon: si:argo
+                      - title: Portfolio
+                        url: https://portfolio.zahaan.online
+                        icon: si:vercel
+                      - title: Homelab Git
+                        url: https://github.com/ZahaanMahajan/homelab
+                        icon: si:github
+
+              - type: calendar
+                first-day-of-week: monday
+
+          - size: full
+            widgets:
+              - type: monitor
+                title: Application Health
+                cache: 1m
+                sites:
+                  - title: ArgoCD
+                    url: https://argocd.zahaan.online
+                  - title: Portfolio
+                    url: https://portfolio.zahaan.online
+
+              - type: releases
+                title: Homelab Infrastructure Updates
+                show-source-icon: true
+                limit: 10
+                repositories:
+                  - argoproj/argo-cd
+                  - kubernetes/kubernetes
+                  - envoyproxy/gateway
+                  - cert-manager/cert-manager
+                  - metallb/metallb
+                  - siderolabs/talos
+                  - kubernetes-csi/csi-driver-nfs
+
+          - size: small
+            widgets:
+              - type: rss
+                title: Kubernetes
+                limit: 10
+                collapse-after: 5
+                feeds:
+                  - url: https://kubernetes.io/feed.xml
+                    title: Kubernetes Blog
+                  - url: https://www.cncf.io/feed/
+                    title: CNCF
+
+      # ==========================================
+      # DEVELOPMENT
+      # ==========================================
+      - name: Development
+        width: wide
+        columns:
+          - size: small
+            widgets:
+              - type: bookmarks
+                title: Developer Resources
+                groups:
+                  - links:
+                      - title: GitHub
+                        url: https://github.com
+                        icon: si:github
+                      - title: Docker Hub
+                        url: https://hub.docker.com
+                        icon: si:docker
+                      - title: Terraform Registry
+                        url: https://registry.terraform.io
+                        icon: si:terraform
+                      - title: AWS Documentation
+                        url: https://docs.aws.amazon.com
+                        icon: si:amazonaws
+
+              - type: hacker-news
+                limit: 10
+                collapse-after: 5
+
+          - size: full
+            widgets:
+              - type: repository
+                repository: ZahaanMahajan/homelab
+
+              - type: releases
+                title: Developer Tools & Releases
+                show-source-icon: true
+                limit: 15
+                repositories:
+                  - glanceapp/glance
+                  - docker/compose
+                  - hashicorp/terraform
+                  - ansible/ansible
+                  - prometheus/prometheus
+                  - grafana/grafana
+                  - argoproj/argo-cd
+
+          - size: small
+            widgets:
+              - type: rss
+                title: Engineering Feeds
+                limit: 15
+                collapse-after: 7
+                feeds:
+                  - url: https://github.blog/feed/
+                    title: GitHub Blog
+                  - url: https://www.docker.com/blog/feed/
+                    title: Docker Blog
+                  - url: https://blog.hashicorp.com/feed.xml
+                    title: HashiCorp Blog
+
+      # ==========================================
+      # OPERATIONS
+      # ==========================================
+      - name: Operations
+        width: wide
+        columns:
+          - size: small
+            widgets:
+              - type: clock
+                hour-format: 24h
+
+              - type: bookmarks
+                title: Operations Resources
+                groups:
+                  - links:
+                      - title: Prometheus Documentation
+                        url: https://prometheus.io/docs/
+                      - title: Grafana Documentation
+                        url: https://grafana.com/docs/
+                      - title: Kubernetes Troubleshooting
+                        url: https://kubernetes.io/docs/tasks/debug/
+
+          - size: full
+            widgets:
+              - type: releases
+                title: Infrastructure Release Tracking
+                show-source-icon: true
+                limit: 15
+                repositories:
+                  - siderolabs/talos
+                  - kubernetes/kubernetes
+                  - envoyproxy/gateway
+                  - argoproj/argo-cd
+                  - prometheus/prometheus
+                  - grafana/grafana
+                  - cert-manager/cert-manager
+
+              - type: rss
+                title: DevOps & SRE
+                limit: 10
+                collapse-after: 5
+                feeds:
+                  - url: https://www.cncf.io/feed/
+                    title: CNCF
+                  - url: https://kubernetes.io/feed.xml
+                    title: Kubernetes
+
+          - size: small
+            widgets:
+              - type: calendar
+                first-day-of-week: monday
+
+              - type: hacker-news
+                limit: 10
+                collapse-after: 5

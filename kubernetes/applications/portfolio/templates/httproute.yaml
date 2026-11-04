@@ -5,11 +5,11 @@ metadata:
   name: {{ include "portfolio.fullname" . }}
 spec:
   parentRefs:
-    - name: {{ .Values.gateway.name }}
-
+    - name: shared-gateway
+      namespace: gateway-system
+      sectionName: https
   hostnames:
     - {{ .Values.route.hostname }}
-
   rules:
     - matches:
         - path:

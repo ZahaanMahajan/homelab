@@ -16,8 +16,8 @@ tolerations:
 
 resources:
   requests:
-    cpu: 500m
-    memory: 512Mi
+    cpu: 300m
+    memory: 256Mi
   limits:
     cpu: 2000m
     memory: 4Gi

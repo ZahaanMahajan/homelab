@@ -29,22 +29,6 @@ resources:
     cpu: 200m
     memory: 128Mi
 
-gateway:
-  enabled: true
-  name: portfolio-gateway
-  className: envoy-gateway
-  address: 192.168.29.241
-
 route:
   enabled: true
   hostname: portfolio.zahaan.online
-
-tls:
-  enabled: true
-  issuer: letsencrypt-production
-  secretName: portfolio-zahaan-online-tls
-
-envoyProxy:
-  enabled: true
-  name: portfolio-proxy
-  loadBalancerIP: 192.168.29.241
