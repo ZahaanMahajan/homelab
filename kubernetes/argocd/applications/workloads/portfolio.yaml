@@ -19,6 +19,8 @@ spec:
     automated:
       prune: false
       selfHeal: true
-
+    managedNamespaceMetadata:
+      labels:
+        gateway-access: "true"
     syncOptions:
       - CreateNamespace=true
