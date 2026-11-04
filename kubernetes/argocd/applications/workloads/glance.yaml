@@ -9,6 +9,10 @@ spec:
     repoURL: https://github.com/ZahaanMahajan/homelab.git
     targetRevision: main
     path: kubernetes/applications/glance
+    helm:
+      releaseName: glance
+      valueFiles:
+        - values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: glance
@@ -18,3 +22,9 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+    # Replaces the old namespace.yaml (keeps the gateway-access label)
+    managedNamespaceMetadata:
+      labels:
+        app.kubernetes.io/name: glance
+        app.kubernetes.io/part-of: homelab
+        gateway-access: "true"
