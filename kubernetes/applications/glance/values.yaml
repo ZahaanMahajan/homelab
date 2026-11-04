@@ -11,7 +11,6 @@ image:
 
 # Pre-existing Secrets (not managed by this chart)
 secrets:
-  auth: glance-auth        # keys: GLANCE_SECRET_KEY, GLANCE_PASSWORD_HASH
   github: glance-github    # key: GITHUB_TOKEN
 
 service:
