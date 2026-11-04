@@ -228,7 +228,7 @@ data:
                     show-source-icon: true
                     limit: 10
                     collapse-after: 6
-                    # token: ${GITHUB_TOKEN}   # uncomment to avoid GitHub rate limits
+                    token: ${GITHUB_TOKEN}   # uncomment to avoid GitHub rate limits
                     repositories:
                       - siderolabs/talos
                       - kubernetes/kubernetes
