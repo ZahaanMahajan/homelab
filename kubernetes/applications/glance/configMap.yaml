@@ -183,8 +183,7 @@ data:
                   # is still what you get when you click the tile.
                   - title: ArgoCD
                     url: https://argocd.zahaan.online
-                    check-url: https://argocd-server.argocd.svc.cluster.local/healthz
-                    allow-insecure: true
+                    check-url: http://argocd-server.argocd.svc.cluster.local/healthz
                     timeout: 10s
                     icon: si:argo
                   - title: Portfolio
