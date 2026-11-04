@@ -1,0 +1,6 @@
+apiVersion: v2
+name: glance
+description: Glance dashboard for Zahaan's homelab
+type: application
+version: 0.2.0
+appVersion: "0.8.5"

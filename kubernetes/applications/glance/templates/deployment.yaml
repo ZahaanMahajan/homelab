@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "glance.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "glance.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "glance.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        # Roll the pod whenever the rendered config changes
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      labels:
+        {{- include "glance.labels" . | nindent 8 }}
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: glance
+          image: {{ include "glance.image" . | quote }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.config.server.port }}
+              protocol: TCP
+          env:
+            - name: GLANCE_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.auth }}
+                  key: GLANCE_SECRET_KEY
+            - name: GLANCE_PASSWORD_HASH
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.auth }}
+                  key: GLANCE_PASSWORD_HASH
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.github }}
+                  key: GITHUB_TOKEN
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          startupProbe:
+            {{- toYaml .Values.startupProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          volumeMounts:
+            - name: glance-config
+              mountPath: /app/config
+              readOnly: true
+      volumes:
+        - name: glance-config
+          configMap:
+            name: {{ include "glance.fullname" . }}-config
+            items:
+              - key: glance.yml
+                path: glance.yml
