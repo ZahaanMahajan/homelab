@@ -9,11 +9,11 @@ data:
       port: 8080
       proxied: true
 
-    auth:
-      secret-key: ${GLANCE_SECRET_KEY}
-      users:
-        admin:
-          password-hash: ${GLANCE_PASSWORD_HASH}
+    # auth:
+    #   secret-key: ${GLANCE_SECRET_KEY}
+    #   users:
+    #     admin:
+    #       password-hash: ${GLANCE_PASSWORD_HASH}
 
     branding:
       app-name: Zahaan's Homelab
