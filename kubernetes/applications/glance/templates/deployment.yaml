@@ -30,16 +30,6 @@ spec:
               containerPort: {{ .Values.config.server.port }}
               protocol: TCP
           env:
-            - name: GLANCE_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.secrets.auth }}
-                  key: GLANCE_SECRET_KEY
-            - name: GLANCE_PASSWORD_HASH
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.secrets.auth }}
-                  key: GLANCE_PASSWORD_HASH
             - name: GITHUB_TOKEN
               valueFrom:
                 secretKeyRef:
