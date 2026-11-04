@@ -18,6 +18,13 @@ spec:
     spec:
       automountServiceAccountToken: false
 
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+
       containers:
         - name: glance
           image: glanceapp/glance:v0.8.5
@@ -40,6 +47,12 @@ spec:
                 secretKeyRef:
                   name: glance-auth
                   key: GLANCE_PASSWORD_HASH
+
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: glance-github
+                  key: GITHUB_TOKEN
 
           resources:
             requests:
