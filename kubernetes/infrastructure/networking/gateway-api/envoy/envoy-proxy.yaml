@@ -1,0 +1,18 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: EnvoyProxy
+metadata:
+  name: shared-envoy-proxy
+  namespace: gateway-system
+spec:
+  provider:
+    type: Kubernetes
+    kubernetes:
+      envoyService:
+        type: LoadBalancer
+        externalTrafficPolicy: Local
+        patch:
+          type: StrategicMerge
+          value:
+            metadata:
+              annotations:
+                metallb.io/loadBalancerIPs: "192.168.29.241"
