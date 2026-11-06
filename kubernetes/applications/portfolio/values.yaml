@@ -1,5 +1,3 @@
-replicaCount: 1
-
 image:
   repository: ghcr.io/zahaanmahajan/portfolio
   tag: 58151c83ccb19ed1fc4015985b48e2e6cb6118cd

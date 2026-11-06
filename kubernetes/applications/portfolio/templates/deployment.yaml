@@ -5,9 +5,8 @@ metadata:
   labels:
     app.kubernetes.io/name: {{ include "portfolio.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
+    kubetoggle.io/toggleable: "true"
 spec:
-  replicas: {{ .Values.replicaCount }}
-
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "portfolio.name" . }}
