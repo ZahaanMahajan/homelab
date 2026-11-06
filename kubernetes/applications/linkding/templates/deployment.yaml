@@ -3,9 +3,10 @@ kind: Deployment
 metadata:
   name: {{ include "linkding.fullname" . }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "linkding.selectorLabels" . | nindent 4 }}
+    kubetoggle.io/toggleable: "true"
 spec:
-  replicas: {{ .Values.replicaCount }}
-
   selector:
     matchLabels:
       {{- include "linkding.selectorLabels" . | nindent 6 }}
