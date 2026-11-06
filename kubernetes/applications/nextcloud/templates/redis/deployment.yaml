@@ -3,10 +3,11 @@ kind: Deployment
 metadata:
   name: redis
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: redis
+    kubetoggle.io/toggleable: "true"
 
 spec:
-  replicas: {{ .Values.redis.replicaCount }}
-
   selector:
     matchLabels:
       app: redis

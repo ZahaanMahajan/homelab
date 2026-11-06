@@ -3,8 +3,10 @@ kind: Deployment
 metadata:
   name: {{ include "nextcloud.fullname" . }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "nextcloud.selectorLabels" . | nindent 4 }}
+    kubetoggle.io/toggleable: "true"
 spec:
-  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       {{- include "nextcloud.selectorLabels" . | nindent 6 }}
