@@ -2,8 +2,6 @@ nameOverride: ""
 fullnameOverride: ""
 partOf: homelab
 
-replicaCount: 1
-
 image:
   repository: glanceapp/glance
   tag: ""

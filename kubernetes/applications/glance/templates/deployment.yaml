@@ -5,8 +5,8 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "glance.labels" . | nindent 4 }}
+    kubetoggle.io/toggleable: "true"
 spec:
-  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       {{- include "glance.selectorLabels" . | nindent 6 }}
