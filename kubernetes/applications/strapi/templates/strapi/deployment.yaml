@@ -5,10 +5,9 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "strapi.labels" . | nindent 4 }}
+    kubetoggle.io/toggleable: "true"
 
 spec:
-  replicas: {{ .Values.replicaCount }}
-
   selector:
     matchLabels:
       {{- include "strapi.selectorLabels" . | nindent 6 }}
