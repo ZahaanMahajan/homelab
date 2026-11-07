@@ -4,6 +4,10 @@ A self-hosted Kubernetes platform built on **Proxmox VE and Talos Linux**, manag
 
 This repository serves as both a production-style homelab and a practical Kubernetes/CKA learning environment.
 
+<div align="center">
+  <img src="assets/homelab.jpeg" alt="Homelab Architecture" width="100%" />
+</div>
+
 ## Architecture
 
 ```text
