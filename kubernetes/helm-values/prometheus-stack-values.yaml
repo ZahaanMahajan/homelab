@@ -1,10 +1,14 @@
+# Make generated resource names match the existing IngressRoutes
+fullnameOverride: "prometheus-kube-prometheus"
+
 defaultRules:
   create: true
 
 grafana:
   enabled: true
+  fullnameOverride: "prometheus-grafana"
   admin:
-    existingSecret: grafana-admin-credentials
+    existingSecret: grafana-admin-secret
     userKey: admin-user
     passwordKey: admin-password
   persistence:
@@ -17,7 +21,6 @@ grafana:
   # Schedules Grafana on talos-worker-03
   nodeSelector:
     kubernetes.io/hostname: "talos-worker-03"
-  # Tolerates the worker-node-03 NoSchedule taint
   tolerations:
     - key: "workload"
       operator: "Equal"
@@ -26,6 +29,7 @@ grafana:
   securityContext:
     runAsNonRoot: true
     runAsUser: 472
+    runAsGroup: 472
     fsGroup: 472
   initChownData:
     enabled: false
@@ -35,10 +39,12 @@ prometheus:
   prometheusSpec:
     replicas: 1
     retention: 7d
-    # Schedules the Prometheus instance on talos-worker-03
+    retentionSize: "6GB"   # keeps the TSDB under the 8Gi volume
+    # Discover ServiceMonitors/PodMonitors from other releases and namespaces
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
     nodeSelector:
       kubernetes.io/hostname: "talos-worker-03"
-    # Tolerates the worker-node-03 NoSchedule taint
     tolerations:
       - key: "workload"
         operator: "Equal"
@@ -58,10 +64,8 @@ alertmanager:
   enabled: true
   alertmanagerSpec:
     replicas: 1
-    # Schedules the Alertmanager instance on talos-worker-03
     nodeSelector:
       kubernetes.io/hostname: "talos-worker-03"
-    # Tolerates the worker-node-03 NoSchedule taint
     tolerations:
       - key: "workload"
         operator: "Equal"
@@ -79,10 +83,10 @@ alertmanager:
 
 kubeStateMetrics:
   enabled: true
-  # Schedules the kube-state-metrics deployment on talos-worker-03
+
+kube-state-metrics:
   nodeSelector:
     kubernetes.io/hostname: "talos-worker-03"
-  # Tolerates the worker-node-03 NoSchedule taint
   tolerations:
     - key: "workload"
       operator: "Equal"
@@ -92,25 +96,37 @@ kubeStateMetrics:
     seccompProfile:
       type: RuntimeDefault
 
-# Left without nodeSelector so it continues running as a DaemonSet across all cluster nodes
-# Explicitly added toleration so it can successfully deploy to talos-worker-03
+# Runs as a DaemonSet on all nodes; tolerates the worker-03 taint
 nodeExporter:
   enabled: true
+
+prometheus-node-exporter:
   tolerations:
     - key: "workload"
       operator: "Equal"
       value: "worker-node-03"
+      effect: "NoSchedule"
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Exists"
       effect: "NoSchedule"
 
 prometheusOperator:
   enabled: true
-  # Schedules the Prometheus Operator deployment on talos-worker-03
   nodeSelector:
     kubernetes.io/hostname: "talos-worker-03"
-  # Tolerates the worker-node-03 NoSchedule taint
   tolerations:
     - key: "workload"
       operator: "Equal"
       value: "worker-node-03"
       effect: "NoSchedule"
 
+# Talos binds these control-plane components to localhost, so their
+# targets would show as down and fire permanent alerts.
+kubeControllerManager:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeEtcd:
+  enabled: false
+kubeProxy:
+  enabled: false
