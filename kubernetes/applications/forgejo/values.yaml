@@ -1,3 +1,4 @@
+
 global:
   namespace: forgejo
 
@@ -25,12 +26,10 @@ forgejo:
     http:
       name: forgejo-http
       port: 3000
-      targetPort: 3000
 
     ssh:
       name: forgejo-ssh
       port: 22
-      targetPort: 22
 
   persistence:
     enabled: true
@@ -45,6 +44,7 @@ forgejo:
     protocol: http
     httpPort: 3000
     sshPort: 22
+    startSSHServer: false
     disableRegistration: true
 
   database:
@@ -107,3 +107,4 @@ httpRoute:
   hostname: git.zahaan.online
   serviceName: forgejo-http
   servicePort: 3000
+

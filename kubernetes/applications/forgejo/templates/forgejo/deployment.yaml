@@ -1,3 +1,4 @@
+
 apiVersion: apps/v1
 kind: Deployment
 
@@ -92,7 +93,7 @@ spec:
               value: {{ .Values.forgejo.config.sshPort | quote }}
 
             - name: FORGEJO__server__START_SSH_SERVER
-              value: "true"
+              value: {{ .Values.forgejo.config.startSSHServer | quote }}
 
             - name: FORGEJO__service__DISABLE_REGISTRATION
               value: {{ .Values.forgejo.config.disableRegistration | quote }}
@@ -120,3 +121,4 @@ spec:
         - name: forgejo-data
           persistentVolumeClaim:
             claimName: {{ .Values.forgejo.persistence.name }}
+
