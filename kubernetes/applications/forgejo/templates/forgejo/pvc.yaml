@@ -1,0 +1,20 @@
+{{- if .Values.forgejo.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+
+metadata:
+  name: {{ .Values.forgejo.persistence.name }}
+  labels:
+    {{- include "forgejo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: forgejo
+
+spec:
+  accessModes:
+    {{- toYaml .Values.forgejo.persistence.accessModes | nindent 4 }}
+
+  storageClassName: {{ .Values.storage.storageClass }}
+
+  resources:
+    requests:
+      storage: {{ .Values.forgejo.persistence.size }}
+{{- end }}

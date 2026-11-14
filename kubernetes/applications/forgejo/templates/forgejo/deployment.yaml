@@ -1,0 +1,122 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: {{ include "forgejo.fullname" . }}
+  labels:
+    {{- include "forgejo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: forgejo
+
+spec:
+  replicas: {{ .Values.forgejo.replicaCount }}
+
+  strategy:
+    type: Recreate
+
+  selector:
+    matchLabels:
+      {{- include "forgejo.selectorLabels" . | nindent 6 }}
+
+  template:
+    metadata:
+      labels:
+        {{- include "forgejo.selectorLabels" . | nindent 8 }}
+
+    spec:
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
+
+      tolerations:
+        {{- toYaml .Values.tolerations | nindent 8 }}
+
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+
+      containers:
+        - name: forgejo
+
+          image: "{{ .Values.forgejo.image.repository }}:{{ .Values.forgejo.image.tag }}"
+          imagePullPolicy: {{ .Values.forgejo.image.pullPolicy }}
+
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+
+            - name: ssh
+              containerPort: 22
+              protocol: TCP
+
+          env:
+            - name: USER_UID
+              value: "1000"
+
+            - name: USER_GID
+              value: "1000"
+
+            - name: FORGEJO__database__DB_TYPE
+              value: {{ .Values.forgejo.database.type | quote }}
+
+            - name: FORGEJO__database__HOST
+              value: {{ .Values.forgejo.database.host | quote }}
+
+            - name: FORGEJO__database__NAME
+              value: {{ .Values.forgejo.database.name | quote }}
+
+            - name: FORGEJO__database__USER
+              value: {{ .Values.forgejo.database.username | quote }}
+
+            - name: FORGEJO__database__PASSWD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.forgejo.database.existingSecret }}
+                  key: {{ .Values.forgejo.database.passwordKey }}
+
+            - name: FORGEJO__server__DOMAIN
+              value: {{ .Values.forgejo.config.domain | quote }}
+
+            - name: FORGEJO__server__ROOT_URL
+              value: {{ .Values.forgejo.config.rootURL | quote }}
+
+            - name: FORGEJO__server__PROTOCOL
+              value: {{ .Values.forgejo.config.protocol | quote }}
+
+            - name: FORGEJO__server__HTTP_PORT
+              value: {{ .Values.forgejo.config.httpPort | quote }}
+
+            - name: FORGEJO__server__SSH_DOMAIN
+              value: {{ .Values.forgejo.config.domain | quote }}
+
+            - name: FORGEJO__server__SSH_PORT
+              value: {{ .Values.forgejo.config.sshPort | quote }}
+
+            - name: FORGEJO__server__START_SSH_SERVER
+              value: "true"
+
+            - name: FORGEJO__service__DISABLE_REGISTRATION
+              value: {{ .Values.forgejo.config.disableRegistration | quote }}
+
+          resources:
+            {{- toYaml .Values.forgejo.resources | nindent 12 }}
+
+          readinessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 10
+
+          livenessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 20
+
+          volumeMounts:
+            - name: forgejo-data
+              mountPath: /data
+
+      volumes:
+        - name: forgejo-data
+          persistentVolumeClaim:
+            claimName: {{ .Values.forgejo.persistence.name }}

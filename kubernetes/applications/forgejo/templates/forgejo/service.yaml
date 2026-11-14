@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: {{ .Values.forgejo.service.http.name }}
+  labels:
+    {{- include "forgejo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: forgejo
+
+spec:
+  type: ClusterIP
+
+  selector:
+    {{- include "forgejo.selectorLabels" . | nindent 4 }}
+
+  ports:
+    - name: http
+      port: {{ .Values.forgejo.service.http.port }}
+      targetPort: http
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: {{ .Values.forgejo.service.ssh.name }}
+  labels:
+    {{- include "forgejo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: forgejo
+
+spec:
+  type: ClusterIP
+
+  selector:
+    {{- include "forgejo.selectorLabels" . | nindent 4 }}
+
+  ports:
+    - name: ssh
+      port: {{ .Values.forgejo.service.ssh.port }}
+      targetPort: ssh
+      protocol: TCP

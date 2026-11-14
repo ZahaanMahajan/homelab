@@ -1,0 +1,109 @@
+global:
+  namespace: forgejo
+
+nodeSelector:
+  kubernetes.io/hostname: talos-worker-03
+
+tolerations:
+  - key: workload
+    operator: Equal
+    value: worker-node-03
+    effect: NoSchedule
+
+storage:
+  storageClass: cocktail-nfs-storage
+
+forgejo:
+  replicaCount: 1
+
+  image:
+    repository: codeberg.org/forgejo/forgejo
+    tag: "17.0.1"
+    pullPolicy: IfNotPresent
+
+  service:
+    http:
+      name: forgejo-http
+      port: 3000
+      targetPort: 3000
+
+    ssh:
+      name: forgejo-ssh
+      port: 22
+      targetPort: 22
+
+  persistence:
+    enabled: true
+    name: forgejo-data
+    size: 20Gi
+    accessModes:
+      - ReadWriteOnce
+
+  config:
+    domain: git.zahaan.online
+    rootURL: https://git.zahaan.online/
+    protocol: http
+    httpPort: 3000
+    sshPort: 22
+    disableRegistration: true
+
+  database:
+    type: postgres
+    host: forgejo-postgres:5432
+    name: forgejo
+    username: forgejo
+    existingSecret: forgejo-postgres-secret
+    passwordKey: POSTGRES_PASSWORD
+
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
+
+postgres:
+  replicaCount: 1
+
+  image:
+    repository: postgres
+    tag: "17-alpine"
+    pullPolicy: IfNotPresent
+
+  database: forgejo
+  username: forgejo
+
+  existingSecret: forgejo-postgres-secret
+  passwordKey: POSTGRES_PASSWORD
+
+  persistence:
+    enabled: true
+    name: postgres-data
+    size: 8Gi
+    accessModes:
+      - ReadWriteOnce
+
+  service:
+    name: forgejo-postgres
+    port: 5432
+    targetPort: 5432
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+
+gateway:
+  name: shared-gateway
+  namespace: gateway-system
+  sectionName: https
+
+httpRoute:
+  enabled: true
+  hostname: git.zahaan.online
+  serviceName: forgejo-http
+  servicePort: 3000
