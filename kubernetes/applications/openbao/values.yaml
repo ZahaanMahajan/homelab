@@ -1,0 +1,76 @@
+openbao:
+  global:
+    enabled: true
+    tlsDisable: true
+
+  injector:
+    enabled: false
+
+  csi:
+    enabled: false
+
+  server:
+    enabled: true
+
+    logLevel: info
+    logFormat: json
+
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+
+    nodeSelector:
+      workload: general
+
+    dataStorage:
+      enabled: false
+
+    auditStorage:
+      enabled: false
+
+    standalone:
+      enabled: true
+      config: |
+        ui = true
+        disable_mlock = true
+
+        listener "tcp" {
+          address = "[::]:8200"
+          cluster_address = "[::]:8201"
+          tls_disable = 1
+        }
+
+        storage "postgresql" {}
+
+    ha:
+      enabled: false
+
+    dev:
+      enabled: false
+
+    extraSecretEnvironmentVars:
+      - envName: BAO_PG_CONNECTION_URL
+        secretName: openbao-postgres
+        secretKey: BAO_PG_CONNECTION_URL
+
+    volumes:
+      - name: postgres-ca
+        configMap:
+          name: openbao-postgres-ca
+
+    volumeMounts:
+      - name: postgres-ca
+        mountPath: /etc/openbao-postgres-ca
+        readOnly: true
+
+    statefulSet:
+      securityContext:
+        container:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL

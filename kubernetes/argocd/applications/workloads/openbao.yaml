@@ -1,0 +1,25 @@
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: openbao
+  namespace: argocd
+
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/ZahaanMahajan/homelab.git
+    targetRevision: main
+    path: kubernetes/applications/openbao
+    helm:
+      releaseName: openbao
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: openbao
+
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+
