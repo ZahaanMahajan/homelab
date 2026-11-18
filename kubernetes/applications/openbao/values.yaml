@@ -49,6 +49,18 @@ openbao:
 
         storage "postgresql" {}
 
+        audit "file" "audit-file" {
+          description = "OpenBao persistent audit log"
+
+          options {
+            file_path     = "/openbao/audit/audit.log"
+            mode          = "0600"
+            format        = "json"
+            hmac_accessor = "true"
+            log_raw       = "false"
+          }
+        }
+
     ha:
       enabled: false
 
