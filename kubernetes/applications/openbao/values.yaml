@@ -30,7 +30,11 @@ openbao:
       enabled: false
 
     auditStorage:
-      enabled: false
+      enabled: true
+      size: 5Gi
+      mountPath: /openbao/audit
+      storageClass: cocktail-nfs-storage
+      accessMode: ReadWriteOnce
 
     standalone:
       enabled: true
