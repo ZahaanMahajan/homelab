@@ -89,3 +89,15 @@ openbao:
           capabilities:
             drop:
               - ALL
+
+httpRoute:
+  enabled: true
+  name: openbao
+
+  parentRefs:
+    - name: shared-gateway
+      namespace: gateway-system
+      sectionName: https
+
+  hostnames:
+    - secrets.zahaan.online
