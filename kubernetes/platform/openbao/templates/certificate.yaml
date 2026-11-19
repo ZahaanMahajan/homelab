@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: openbao-zahaan-online
+  namespace: gateway-system
+spec:
+  secretName: openbao-zahaan-online-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames:
+    - secrets.zahaan.online

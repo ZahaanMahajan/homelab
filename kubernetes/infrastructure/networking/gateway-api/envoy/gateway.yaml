@@ -35,6 +35,8 @@ spec:
         certificateRefs:
           - kind: Secret
             name: gateway-zahaan-online-tls
+          - kind: Secret
+            name: openbao-zahaan-online-tls
       allowedRoutes:
         namespaces:
           from: Selector
